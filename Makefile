@@ -18,7 +18,7 @@ all: main
 
 # https://stackoverflow.com/questions/2145590/what-is-the-purpose-of-phony-in-a-makefile
 # clean command is not associated with any file found that could be named "clean"
-.PHONY: clean | debug | objs
+.PHONY: clean | debug
 
 # wait for all object files to be generated and
 # link them for final executable
@@ -45,7 +45,9 @@ debug:
 outfile:
 	@echo $(OUTFILE)
 
+
 clean:
 	rm $(OBJDIR)/* $(OUTDIR)/*
+
 
 
