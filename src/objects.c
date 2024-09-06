@@ -100,7 +100,6 @@ Sphere sphere_create(Vector3 position, float radius, Color color) {
         .position = position,
         .radius = radius,
         .color = color,
-
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
     };
 
@@ -110,4 +109,22 @@ void sphere_render(Sphere* sphere) {
     DrawSphereWires(sphere->position, sphere->radius, 16, 16, sphere->color);
     axis_render(sphere->axes, sphere->position);
     DrawSphere(sphere->position, 0.1, MAGENTA); // center of sphere
+}
+
+
+Cube cube_create(Vector3 position, float width, float height, float length, Color color) {
+    return (Cube) {
+        .position = position,
+        .width = width,
+        .height = height,
+        .length = length,
+        .color = color,
+        .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
+    };
+
+}
+void cube_render(Cube* cube) {
+    DrawCubeWires(cube->position, cube->width, cube->height, cube->length, cube->color);
+    axis_render(cube->axes, cube->position);
+    DrawSphere(cube->position, 0.1, MAGENTA); // center of cube
 }

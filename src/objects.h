@@ -21,6 +21,7 @@ typedef struct {
     float last_touched_position;
 } Axis;
 
+// TODO: make it accept a length to make it smaller
 Axis axis_new_x();
 Axis axis_new_y();
 Axis axis_new_z();
@@ -40,7 +41,6 @@ typedef struct {
 } Sphere;
 
 Sphere sphere_create(Vector3 position, float radius, Color color);
-
 void sphere_render(Sphere* sphere);
 
 
@@ -49,8 +49,14 @@ typedef struct {
     float width;
     float height;
     float length;
+
     Color color;
+    Axis axes[3];
 } Cube;
+
+Cube cube_create(Vector3 position, float width, float height, float length, Color color);
+void cube_render(Cube* cube);
+
 
 typedef struct {} Octahedron;
 typedef struct {} Capsule;

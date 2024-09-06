@@ -41,6 +41,7 @@ int main(void) {
     manager_add_sphere((Vector3){2, 3, 5}, 2.0f, VIOLET);
 
 
+    Cube cube = cube_create((Vector3){-2, -3, -5}, 1.0f, 1.0f, 2.0f, BLACK);
 
     // Main game loop
     while (!WindowShouldClose()) { // esc to exit
@@ -62,9 +63,11 @@ int main(void) {
 
 
             BeginMode3D(camera);
-                DrawSphere(origin, .1, MAGENTA);
+                DrawSphere(origin, .1, MAGENTA); // origin point
 
                 manager_render_objects();
+
+                cube_render(&cube);
             EndMode3D();
 
             DrawFPS(SCREEN_WIDTH - 100, 20);
