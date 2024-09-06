@@ -3,8 +3,8 @@
 #include <stdbool.h>
 
 #include "constants.h"
-#include "objects.h"
-#include "objects_manager.h"
+#include "objects/objects.h"
+#include "objects/objects_manager.h"
 
 
 int main(void) {

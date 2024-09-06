@@ -1,8 +1,6 @@
 #include "objects.h"
-#include "collisions.h"
-#include <raylib.h>
-#include <raymath.h>
-#include <stdbool.h>
+
+#include "../collisions/collisions.h"
 
 Axis axis_new_x() {
     return (Axis) {

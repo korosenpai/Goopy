@@ -1,7 +1,7 @@
 #pragma once 
 
 #include <raylib.h>
-#include "objects.h"
+#include "../objects/objects.h"
 
 // https://www.raylib.com/examples/models/loader.html?name=models_mesh_picking hit object
 

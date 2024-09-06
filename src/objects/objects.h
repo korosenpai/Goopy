@@ -1,6 +1,9 @@
 #pragma  once
 
 #include <raylib.h>
+#include <raymath.h>
+#include <stdbool.h>
+
 
 // typedef enum {SPHERE, CUBE} OBJ_TYPE;
 

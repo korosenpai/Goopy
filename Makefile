@@ -4,7 +4,7 @@ LDFLAGS = -lraylib -lm
 # lm is for libm used by raygui
 
 SRCDIR = src
-SRCS = $(wildcard $(SRCDIR)/*.c)
+SRCS := $(shell find $(SRCDIR) -type f -name "*.c")
 
 # compile files but not link
 OBJDIR = objs
@@ -31,6 +31,7 @@ main: $(OBJ) | $(OUTDIR)
 # and if folder obj not found create it
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo -n generating $@:
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
@@ -47,7 +48,7 @@ outfile:
 
 
 clean:
-	rm $(OBJDIR)/* $(OUTDIR)/*
+	rm -r $(OBJDIR)/* $(OUTDIR)/*
 
 
 
