@@ -1,5 +1,8 @@
 #include "objects.h"
+#include "collisions.h"
 #include <raylib.h>
+#include <raymath.h>
+#include <stdbool.h>
 
 Axis axis_new_x() {
     return (Axis) {
@@ -7,7 +10,9 @@ Axis axis_new_x() {
         .width = AXIS_MAX_LENGTH,
         .height = AXIS_MIN_LENGTH,
         .length = AXIS_MIN_LENGTH,
-        .last_touched_position = (Vector3) {0},
+        .color = RED,
+        .is_selected = false,
+        .last_touched_position = 0,
     };
 }
 Axis axis_new_y() {
@@ -16,7 +21,9 @@ Axis axis_new_y() {
         .width = AXIS_MIN_LENGTH,
         .height = AXIS_MAX_LENGTH,
         .length = AXIS_MIN_LENGTH,
-        .last_touched_position = (Vector3) {0},
+        .color = GREEN,
+        .is_selected = false,
+        .last_touched_position = 0,
     };
 }
 Axis axis_new_z() {
@@ -25,6 +32,82 @@ Axis axis_new_z() {
         .width = AXIS_MIN_LENGTH,
         .height = AXIS_MIN_LENGTH,
         .length = AXIS_MAX_LENGTH,
-        .last_touched_position = (Vector3) {0},
+        .color = BLUE,
+        .is_selected = false,
+        .last_touched_position = 0,
     };
+}
+
+void axis_render(Axis axes[3], Vector3 obj_pos) {
+
+    for (int i = 0; i < 3; i++) {
+        Axis* axis = axes + i;
+        DrawCube(
+            Vector3Add(obj_pos, axis->offset),
+            axis->width,
+            axis->height,
+            axis->length,
+            (!axis->is_selected ? axis->color : SELECTED_COLOR)
+        );
+    }
+}
+
+void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos) {
+    bool is_mouse_button_down = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+
+    RayCollision x_hit = GetRayCollisionBox(*ray, get_axis_bounding_box(axes, *obj_pos));
+    if (x_hit.hit && is_mouse_button_down) {
+
+        // skip first touching frame so last_touched_position is set
+        if (axes[0].is_selected) {
+
+            obj_pos->x += x_hit.point.x - axes[0].last_touched_position;
+        }
+        axes[0].last_touched_position = x_hit.point.x;
+        axes[0].is_selected = true;
+    }
+    else axes[0].is_selected = false;
+
+    RayCollision y_hit = GetRayCollisionBox(*ray, get_axis_bounding_box(axes + 1, *obj_pos));
+    if (y_hit.hit && is_mouse_button_down) {
+
+        // skip first touching frame so last_touched_position is set
+        if (axes[1].is_selected) {
+
+            obj_pos->y += y_hit.point.y - axes[1].last_touched_position;
+        }
+        axes[1].last_touched_position = y_hit.point.y;
+        axes[1].is_selected = true;
+    }
+    else axes[1].is_selected = false;
+
+    RayCollision z_hit = GetRayCollisionBox(*ray, get_axis_bounding_box(axes + 2, *obj_pos));
+    if (z_hit.hit && is_mouse_button_down) {
+
+        // skip first touching frame so last_touched_position is set
+        if (axes[2].is_selected) {
+
+            obj_pos->z += z_hit.point.z - axes[2].last_touched_position;
+        }
+        axes[2].last_touched_position = z_hit.point.z;
+        axes[2].is_selected = true;
+    }
+    else axes[2].is_selected = false;
+}
+
+Sphere sphere_create(Vector3 position, float radius, Color color) {
+    return (Sphere) {
+        .position = position,
+        .radius = radius,
+        .color = color,
+
+        .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
+    };
+
+}
+
+void sphere_render(Sphere* sphere) {
+    DrawSphereWires(sphere->position, sphere->radius, 16, 16, sphere->color);
+    axis_render(sphere->axes, sphere->position);
+    DrawSphere(sphere->position, 0.1, MAGENTA); // center of sphere
 }
