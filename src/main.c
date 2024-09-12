@@ -1,9 +1,9 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "constants.h"
-#include "objects/objects.h"
 #include "objects/objects_manager.h"
 
 
@@ -39,9 +39,8 @@ int main(void) {
 
     manager_add_sphere(origin, 2.0f, BLACK);
     manager_add_sphere((Vector3){2, 3, 5}, 2.0f, VIOLET);
+    // Cube cube = cube_create((Vector3){-2, -3, -5}, 1.0f, 1.0f, 2.0f, BLACK);
 
-
-    Cube cube = cube_create((Vector3){-2, -3, -5}, 1.0f, 1.0f, 2.0f, BLACK);
 
     // Main game loop
     while (!WindowShouldClose()) { // esc to exit
@@ -51,8 +50,10 @@ int main(void) {
 
 
         // collisions
-        Ray ray = GetScreenToWorldRay(GetMousePosition(), camera);
-        manager_move_all_axis(&ray);
+        Ray mouse_ray = GetScreenToWorldRay(GetMousePosition(), camera);
+        manager_select_obj(&mouse_ray);
+        manager_move_selected_obj(&mouse_ray);
+
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -63,12 +64,15 @@ int main(void) {
 
 
             BeginMode3D(camera);
-                DrawSphere(origin, .1, MAGENTA); // origin point
+                DrawSphere(origin, .1, BLACK); // origin point
 
                 manager_render_objects();
 
-                cube_render(&cube);
             EndMode3D();
+
+            // 2d menu
+            manager_render_selected_obj_menu(&camera);
+
 
             DrawFPS(SCREEN_WIDTH - 100, 20);
 

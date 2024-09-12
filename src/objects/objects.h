@@ -32,7 +32,7 @@ Axis axis_new_z();
 // obj pos is parent location
 // ex in sphere pass sphere pos
 void axes_render(Axis axes[3], Vector3 obj_pos);
-void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos);
+void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs to be moved
 
 
 typedef struct {

@@ -36,7 +36,7 @@ Axis axis_new_z() {
     };
 }
 
-void axis_render(Axis axes[3], Vector3 obj_pos) {
+void axes_render(Axis axes[3], Vector3 obj_pos) {
 
     for (int i = 0; i < 3; i++) {
         Axis* axis = axes + i;
@@ -105,7 +105,7 @@ Sphere sphere_create(Vector3 position, float radius, Color color) {
 
 void sphere_render(Sphere* sphere) {
     DrawSphereWires(sphere->position, sphere->radius, 16, 16, sphere->color);
-    axis_render(sphere->axes, sphere->position);
+    // axes_render(sphere->axes, sphere->position);
     DrawSphere(sphere->position, 0.1, MAGENTA); // center of sphere
 }
 
@@ -123,6 +123,6 @@ Cube cube_create(Vector3 position, float width, float height, float length, Colo
 }
 void cube_render(Cube* cube) {
     DrawCubeWires(cube->position, cube->width, cube->height, cube->length, cube->color);
-    axis_render(cube->axes, cube->position);
+    axes_render(cube->axes, cube->position);
     DrawSphere(cube->position, 0.1, MAGENTA); // center of cube
 }
