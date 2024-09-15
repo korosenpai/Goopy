@@ -1,16 +1,16 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "constants.h"
 #include "objects/objects_manager.h"
 
 
+
 int main(void) {
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Goopy - 3d modeller");
     SetTargetFPS(60);
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Goopy - 3d modeller");
 
     float time = 0;
 
@@ -20,27 +20,29 @@ int main(void) {
     float resolution[2] = { SCREEN_WIDTH, SCREEN_HEIGHT };
     SetShaderValue(shader, resolutionLoc, resolution, SHADER_UNIFORM_VEC2);
 
-    const Vector3 origin = (Vector3){0.0, 0.0, 0.0};
-
     // camera
-    Camera3D camera = { 
-        .position = (Vector3){ 0.0f, 10.0f, 10.0f },
-        .up = (Vector3){ 0.0f, 1.0f, 0.0f },
-        .target = origin,
-        .fovy = 45.0f,
-        .projection = CAMERA_PERSPECTIVE,
-    };
-    int camera_mode = CAMERA_FREE;
+    // Camera3D camera = { 
+    //     .position = (Vector3){ 0.0f, 10.0f, 10.0f },
+    //     .up = (Vector3){ 0.0f, 1.0f, 0.0f },
+    //     .target = (Vector3){ 0.0f, 0.0f, 0.0f },
+    //     .fovy = 45.0f,
+    //     .projection = CAMERA_PERSPECTIVE,
+    // };
+    Camera3D camera = {0};
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };
+    camera.fovy = 45.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
+    int camera_mode = CAMERA_PERSPECTIVE;
 
     // make it have camera static is enabled
-    DisableCursor();
-    bool is_cursor_enabled = false;
+    // DisableCursor();
+    bool is_cursor_enabled = true;
 
 
-    manager_add_sphere(origin, 2.0f, BLACK);
+    manager_add_sphere((Vector3){ 0.0f, 0.0f, 0.0f }, 2.0f, BLACK);
     manager_add_sphere((Vector3){2, 3, 5}, 2.0f, VIOLET);
-    // Cube cube = cube_create((Vector3){-2, -3, -5}, 1.0f, 1.0f, 2.0f, BLACK);
-
 
     // Main game loop
     while (!WindowShouldClose()) { // esc to exit
@@ -64,7 +66,7 @@ int main(void) {
 
 
             BeginMode3D(camera);
-                DrawSphere(origin, .1, BLACK); // origin point
+                DrawSphere((Vector3){0.0f, 0.0f, 0.0f}, .1, BLACK); // origin point
 
                 manager_render_objects();
 
@@ -93,6 +95,8 @@ int main(void) {
 
 
     }
+
+    manager_destroy_objects();
 
     UnloadShader(shader);
     CloseWindow();

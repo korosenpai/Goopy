@@ -2,6 +2,11 @@
 
 #include "../collisions/collisions.h"
 
+#include <raylib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 Axis axis_new_x() {
     return (Axis) {
         .offset = (Vector3){AXIS_MAX_LENGTH / 2, 0, 0},
@@ -45,7 +50,7 @@ void axes_render(Axis axes[3], Vector3 obj_pos) {
             axis->width,
             axis->height,
             axis->length,
-            (!axis->is_selected ? axis->color : SELECTED_COLOR)
+            (!axis->is_selected ? axis->color : OBJ_SELECTED_COLOR)
         );
     }
 }
@@ -93,36 +98,51 @@ void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos) {
     else axes[2].is_selected = false;
 }
 
-Sphere sphere_create(Vector3 position, float radius, Color color) {
-    return (Sphere) {
-        .position = position,
-        .radius = radius,
-        .color = color,
-        .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
-    };
 
+
+float* obj_set_data_array(int n_elems, ...) {
+    float* data = malloc(sizeof(float) * n_elems);
+
+    va_list lst;
+    va_start(lst, n_elems);
+    for (int i = 0; i < n_elems; i++) {
+        data[i] = (float)va_arg(lst, double);
+    }
+    va_end(lst);
+
+    return data;
 }
 
-void sphere_render(Sphere* sphere) {
-    DrawSphereWires(sphere->position, sphere->radius, 16, 16, sphere->color);
-    // axes_render(sphere->axes, sphere->position);
+
+//////////////////// SPHERES ////////////////////
+// data = { radius }
+void sphere_render(const Object* sphere, bool is_selected) {
+    DrawSphereWires(sphere->position, sphere->data[0], 16, 16, is_selected ? OBJ_SELECTED_COLOR : sphere->color);
     DrawSphere(sphere->position, 0.1, MAGENTA); // center of sphere
 }
+RayCollision sphere_select(const Object* sphere, const Ray* ray) {
+    return GetRayCollisionSphere(*ray, sphere->position, sphere->data[0]);
+}
 
-
-Cube cube_create(Vector3 position, float width, float height, float length, Color color) {
-    return (Cube) {
+Object sphere_create(Vector3 position, float radius, Color color) {
+    return (Object) {
+        .type = SPHERE,
         .position = position,
-        .width = width,
-        .height = height,
-        .length = length,
-        .color = color,
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
+        .color = color,
+        .data = obj_set_data_array(1, radius),
+        .updated = false,
+        .move = NULL,
+        .select = sphere_select,
+        .render = sphere_render,
     };
 
 }
-void cube_render(Cube* cube) {
-    DrawCubeWires(cube->position, cube->width, cube->height, cube->length, cube->color);
-    axes_render(cube->axes, cube->position);
-    DrawSphere(cube->position, 0.1, MAGENTA); // center of cube
+
+//////////////////// CUBES  ////////////////////
+
+
+
+void object_destroy(Object* obj) {
+    free(obj->data);
 }
