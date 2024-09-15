@@ -5,9 +5,17 @@
 #include <stdbool.h>
 
 
-// typedef enum {SPHERE, CUBE} OBJ_TYPE;
+typedef enum {
+    SPHERE,
+    CUBE,
+    OCTAHEDRON,
+    CAPSULE,
+    CYLINDER,
+    TORUS,
+    ELLIPSOID,
+} OBJ_TYPE;
 
-#define SELECTED_COLOR GOLD
+#define OBJ_SELECTED_COLOR GOLD
 
 #define AXIS_MAX_LENGTH 1.0
 #define AXIS_MIN_LENGTH 0.1
@@ -31,39 +39,34 @@ Axis axis_new_z();
 
 // obj pos is parent location
 // ex in sphere pass sphere pos
+// TODO: update to pass whole obj
 void axes_render(Axis axes[3], Vector3 obj_pos);
 void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs to be moved
 
 
-typedef struct {
-    Vector3 position; // of center
-    float radius;
-
-    Color color;
-    Axis axes[3];
-} Sphere;
-
-Sphere sphere_create(Vector3 position, float radius, Color color);
-void sphere_render(Sphere* sphere);
-
-
-typedef struct {
+#define OBJ_PTR_RENDER(obj_ptr, is_selected) ((obj_ptr)->render(obj_ptr, is_selected))
+#define OBJ_RENDER(obj, is_selected) ((obj).render(&(obj), is_selected))
+#define OBJ_PTR_SELECT(obj, ray_ptr) ((obj)->select(obj, ray_ptr))
+typedef struct Object {
+    OBJ_TYPE type;
     Vector3 position;
-    float width;
-    float height;
-    float length;
-
-    Color color;
     Axis axes[3];
-} Cube;
+    Color color;
 
-Cube cube_create(Vector3 position, float width, float height, float length, Color color);
-void cube_render(Cube* cube);
+    float* data;
+    bool updated; // if some state changed since last frame, (if not skip updating in shader) // TODO: at end to optimize
+    void (* move) (const Vector3 delta);
+    RayCollision (* select) (const struct Object* self, const Ray* ray); // collision is checked in manager
+    void (* render) (const struct Object* self, bool is_selected);
+} Object;
 
 
-typedef struct {} Octahedron;
-typedef struct {} Capsule;
-typedef struct {} Cylinder;
-typedef struct {} Torus;
-typedef struct {} Ellipsoid;
+// SPHERE data = { width, height, length }
+Object sphere_create(Vector3 position, float radius, Color color);
+
+// CUBE data = { radius }
+
+
+void object_destroy(Object* obj);
+
 
