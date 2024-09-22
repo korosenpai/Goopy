@@ -6,6 +6,7 @@
 
 
 typedef enum {
+    GENERIC,
     SPHERE,
     CUBE,
     OCTAHEDRON,
@@ -32,16 +33,16 @@ typedef struct {
     float last_touched_position;
 } Axis;
 
-// TODO: make it accept a length to make it smaller
-Axis axis_new_x();
-Axis axis_new_y();
-Axis axis_new_z();
+typedef struct {
+    int selected;
+    Axis axes[3];
+} Axes;
+
 
 // obj pos is parent location
 // ex in sphere pass sphere pos
-// TODO: update to pass whole obj
 void axes_render(Axis axes[3], Vector3 obj_pos);
-void axis_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs to be moved
+void axes_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs to be moved
 
 
 #define OBJ_PTR_RENDER(obj_ptr, is_selected) ((obj_ptr)->render(obj_ptr, is_selected))
@@ -60,13 +61,13 @@ typedef struct Object {
     void (* render) (const struct Object* self, bool is_selected);
 } Object;
 
+void object_destroy(Object* obj);
 
-// SPHERE data = { width, height, length }
+// SPHERE data = { radius }
 Object sphere_create(Vector3 position, float radius, Color color);
 
-// CUBE data = { radius }
+// CUBE data = { width, height, length }
+Object cube_create(Vector3 position, float width, float height, float length, Color color);
 
-
-void object_destroy(Object* obj);
 
 

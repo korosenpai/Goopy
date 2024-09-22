@@ -26,7 +26,7 @@ static Object _objects[MAX_OBJ_COUNT] = {};
 
 void manager_move_selected_obj(Ray* ray) {
     if (_selected_obj < 0) return;
-    axis_move(ray, _objects[_selected_obj].axes, &_objects[_selected_obj].position);
+    axes_move(ray, _objects[_selected_obj].axes, &_objects[_selected_obj].position);
 }
 
 
@@ -51,20 +51,29 @@ void manager_render_selected_obj_menu(Camera3D* camera) {
 void manager_select_obj(Ray* ray) {
     if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) return;
 
+    // find obj hit closest to cursor
+    bool did_hit_obj = false;
+    float closest_dist = 999;
+
     // check if colliding with any sphere
     RayCollision obj_hit = {0};
     for (int i = 0; i < _obj_count; i++) {
 
         obj_hit = OBJ_PTR_SELECT(_objects + i, ray);
         if (!obj_hit.hit) continue;
+        did_hit_obj = true;
 
-        _selected_obj = i;
+        if (obj_hit.distance < closest_dist) {
+            closest_dist = obj_hit.distance;
+
+            _selected_obj = i;
+        }
         // printf("selected obj %d\n", _selected_obj);
-        return;
     }
 
     // if nothing hit
-    manager_unselect_obj();
+    if (!did_hit_obj)
+        manager_unselect_obj();
 
 }
 
@@ -77,12 +86,13 @@ void manager_destroy_objects() {
 
 ////////////// ADD OBJECTS //////////////
 
-void manager_add_sphere(Vector3 position, float radius, Color color) {
+void manager_add_object(Object obj) {
     if (_obj_count + 1 == MAX_OBJ_COUNT) {
         printf("max sphere creation reached\n");
         return;
     }
 
-    _objects[_obj_count] = sphere_create(position, radius, color);
+    _objects[_obj_count] = obj;
     _obj_count++;
 }
+

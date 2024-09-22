@@ -13,4 +13,4 @@ void manager_render_selected_obj_menu(Camera3D* camera);
 void manager_destroy_objects();
 
 /// objects
-void manager_add_sphere(Vector3 position, float radius, Color color);
+void manager_add_object(Object obj);
