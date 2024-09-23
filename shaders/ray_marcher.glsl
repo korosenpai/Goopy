@@ -26,7 +26,10 @@ float sdBox(vec3 p, vec3 size) {
 
 // map()
 float sdf(vec3 pos) {
-    return sdSphere(pos, vec3(0), 1.5);
+    float sphere1 = sdSphere(pos, vec3(0.), 1.0);
+    float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 1.0);
+
+    return min(sphere1, sphere2);
 }
 
 ///////////// LIGHTING /////////////
