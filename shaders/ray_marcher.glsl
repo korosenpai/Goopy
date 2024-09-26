@@ -13,6 +13,9 @@ uniform vec3 up = vec3(0.0, 1.0, 0.0); // what we consider to be up
 
 uniform vec2 mouse;
 uniform vec3 ro;
+uniform vec3 rd;
+
+uniform vec4 camera_quaternion;
 
 out vec4 fragColor;
 
@@ -27,7 +30,7 @@ float sdBox(vec3 p, vec3 size) {
 // map()
 float sdf(vec3 pos) {
     float sphere1 = sdSphere(pos, vec3(0.), 1.0);
-    float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 1.0);
+    float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
 
     return min(sphere1, sphere2);
 }
@@ -105,28 +108,56 @@ mat2 rot2D(float angle) {
     float c = cos(angle);
     return mat2(c, -s, s, c);
 }
+vec3 applyQuaternion(vec3 v, vec4 q) {
 
+			// calculate quat * vector
+      vec4 qv = vec4(
+        q.w * v.x + q.y * v.z - q.z * v.y,
+        q.w * v.y + q.z * v.x - q.x * v.z,
+        q.w * v.z + q.x * v.y - q.y * v.x,
+        -q.x * v.x - q.y * v.y - q.z * v.z
+      );
+
+			// calculate result * inverse quat
+      return vec3(
+        qv.x  * q.w + qv.w * -q.x + qv.y * -q.z - qv.z * -q.y,
+        qv.y * q.w + qv.w * -q.y + qv.z * -q.x - qv.x  * -q.z,
+        qv.z * q.w + qv.w * -q.z + qv.x  * -q.y - qv.y * -q.x
+      );
+}
 
 vec3 get_ray_direction() {
     float aspect_ratio = resolution.x / resolution.y;
-    float fov2 = radians(fov) / 2.0;
+    // float fov2 = radians(fov) / 2.0;
 
-    vec2 screenCoord = gl_FragCoord.xy / resolution; // range 0...1
-    screenCoord -= 0.5; // -0.5...0.5
-    screenCoord *= 2.0; // -1...1 so 0,0 is center of canves
-    screenCoord.x *= resolution.x / resolution.y;
+    // vec2 screenCoord = gl_FragCoord.xy / resolution; // range 0...1
+    // screenCoord -= 0.5; // -0.5...0.5
+    // screenCoord *= 2.0; // -1...1 so 0,0 is center of canves
+    // screenCoord.x *= resolution.x / resolution.y;
 
-    screenCoord *= aspect_ratio;
+    // screenCoord *= aspect_ratio;
 
-    vec2 offsets = screenCoord * tan(fov2);
+    // vec2 offsets = screenCoord * tan(fov2);
 
-    // compute 3 orthogonal unit vectors
-    vec3 rayFront = normalize(front);
-    vec3 rayRight = normalize(cross(rayFront, normalize(up)));
-    vec3 rayUp = cross(rayRight, rayFront);
-    vec3 rayDir = rayFront + rayRight * offsets.x + rayUp * offsets.y;
+    // // compute 3 orthogonal unit vectors
+    // vec3 rayFront = normalize(rd);
+    // vec3 rayRight = normalize(cross(rayFront, normalize(up)));
+    // vec3 rayUp = cross(rayRight, rayFront);
+    // vec3 rayDir = rayFront + rayRight * offsets.x + rayUp * offsets.y;
 
-    return normalize(rayDir);
+    // return normalize(rayDir);
+
+    vec2 uv = gl_FragCoord.xy / resolution; // range 0...1
+    uv -= 0.5; // -0.5...0.5
+    uv *= 2.0; // -1...1 so 0,0 is center of canves
+    uv.x *= aspect_ratio;
+
+    float d = 1.0 / tan(radians(fov) / 2.0);
+
+    vec3 rayDirection = normalize(vec3(uv, -d));
+    rayDirection = applyQuaternion(rayDirection, camera_quaternion);
+
+    return normalize(rayDirection);
 }
 
 #define FOV 45.

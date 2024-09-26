@@ -27,13 +27,15 @@ main: $(OBJ) | $(OUTDIR)
 	@echo -n linking objects:
 	$(CC) $(CFLAGS) $? -o $(OUTFILE) $(LDFLAGS)
 
+# TODO: compile for gdb
+# main_debug:
+
 # for all c files found in SRCDIR create an object file in OBJDIR
 # and if folder obj not found create it
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo -n generating $@:
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
-
 
 # create dirs if not found
 $(OUTDIR) | $(OBJDIR):
@@ -49,6 +51,7 @@ outfile:
 
 clean:
 	rm -r $(OBJDIR)/* $(OUTDIR)/*
+	rmdir $(OBJDIR) $(OUTDIR)
 
 
 
