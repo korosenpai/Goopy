@@ -44,20 +44,16 @@ int main(void) {
     Camera3D camera = camera_create((Vector3){0.0f, 0.0f, 0.0f}, ray_origin);
 
     float camera_quaternion[4] = {0};
-    Quaternion q = QuaternionFromMatrix(MatrixTranspose(GetCameraMatrix(camera)));
-    camera_quaternion[0] = q.x;
-    camera_quaternion[1] = q.y;
-    camera_quaternion[2] = q.z;
-    camera_quaternion[3] = q.w;
+    camera_update_quaternion(&camera, camera_quaternion);
     int cameraQuaternionLoc = GetShaderLocation(shader, "camera_quaternion");
     SetShaderValue(shader, cameraQuaternionLoc, camera_quaternion, SHADER_UNIFORM_VEC4);
     
-    // manager_add_object(
-    //     cube_create(
-    //         (Vector3){0.0f, 0.0f, 0.0f},
-    //         1, 1, 1, BLACK
-    //     )
-    // );
+    manager_add_object(
+        cube_create(
+            (Vector3){1.0f, 1.0f, 0.0f},
+            1, 1, 1, RED 
+        )
+    );
     manager_add_object(
         sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
     );
@@ -86,12 +82,7 @@ int main(void) {
         SetShaderValue(shader, rayDirectionLoc, ray_direction, SHADER_UNIFORM_VEC3);
 
 
-        Quaternion q = QuaternionFromMatrix(MatrixTranspose(GetCameraMatrix(camera)));
-        camera_quaternion[0] = q.x;
-        camera_quaternion[1] = q.y;
-        camera_quaternion[2] = q.z;
-        camera_quaternion[3] = q.w;
-        int cameraQuaternionLoc = GetShaderLocation(shader, "camera_quaternion");
+        camera_update_quaternion(&camera, camera_quaternion);
         SetShaderValue(shader, cameraQuaternionLoc, camera_quaternion, SHADER_UNIFORM_VEC4);
 
 
@@ -109,8 +100,7 @@ int main(void) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
             EndShaderMode();
 
-            // if (!IsCursorHidden()) {
-            if (1) {
+            if (!IsCursorHidden()) {
 
                 BeginMode3D(camera);
                     DrawSphere((Vector3){0.0f, 0.0f, 0.0f}, .1, BLACK); // origin point

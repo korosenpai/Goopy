@@ -8,14 +8,13 @@ uniform float time;
 
 uniform float fov = 45.0; // the vectical field of view (FOV) in degrees
 uniform vec3 cameraPos = vec3(0.0, 0.0, -3.0); // position of the camera in world coordinates
-uniform vec3 front = vec3(0.0, 0.0, 1.0); // where are we looking at
-uniform vec3 up = vec3(0.0, 1.0, 0.0); // what we consider to be up
 
-uniform vec2 mouse;
+// uniform vec2 mouse; // maybe add some light where mouse is?
 uniform vec3 ro;
 uniform vec3 rd;
-
 uniform vec4 camera_quaternion;
+
+uniform vec3 box_pos;
 
 out vec4 fragColor;
 
@@ -27,12 +26,21 @@ float sdBox(vec3 p, vec3 size) {
     return length(max(abs(p) - size, 0));
 }
 
+float smin(float a, float b, float k) {
+    float h = max(k - abs(a - b), 0.0) / k;
+    return min(a, b) - h*h*h*k*(1.0/6.0);
+}
+
+
 // map()
 float sdf(vec3 pos) {
     float sphere1 = sdSphere(pos, vec3(0.), 1.0);
     float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
+    float box1 = sdBox(pos - vec3(1.0 + sin(time), 1.0, 0.0), vec3(0.5)); // NOTE: cube size must be half
 
-    return min(sphere1, sphere2);
+    float d = smin(sphere1, sphere2, 1.0);
+    d = smin(d, box1, 1.5);
+    return d; 
 }
 
 ///////////// LIGHTING /////////////
@@ -109,43 +117,24 @@ mat2 rot2D(float angle) {
     return mat2(c, -s, s, c);
 }
 vec3 applyQuaternion(vec3 v, vec4 q) {
-
-			// calculate quat * vector
-      vec4 qv = vec4(
+    // calculate quat * vector
+    vec4 qv = vec4(
         q.w * v.x + q.y * v.z - q.z * v.y,
         q.w * v.y + q.z * v.x - q.x * v.z,
         q.w * v.z + q.x * v.y - q.y * v.x,
         -q.x * v.x - q.y * v.y - q.z * v.z
-      );
+    );
 
-			// calculate result * inverse quat
-      return vec3(
+    // calculate result * inverse quat
+    return vec3(
         qv.x  * q.w + qv.w * -q.x + qv.y * -q.z - qv.z * -q.y,
         qv.y * q.w + qv.w * -q.y + qv.z * -q.x - qv.x  * -q.z,
         qv.z * q.w + qv.w * -q.z + qv.x  * -q.y - qv.y * -q.x
-      );
+    );
 }
 
 vec3 get_ray_direction() {
     float aspect_ratio = resolution.x / resolution.y;
-    // float fov2 = radians(fov) / 2.0;
-
-    // vec2 screenCoord = gl_FragCoord.xy / resolution; // range 0...1
-    // screenCoord -= 0.5; // -0.5...0.5
-    // screenCoord *= 2.0; // -1...1 so 0,0 is center of canves
-    // screenCoord.x *= resolution.x / resolution.y;
-
-    // screenCoord *= aspect_ratio;
-
-    // vec2 offsets = screenCoord * tan(fov2);
-
-    // // compute 3 orthogonal unit vectors
-    // vec3 rayFront = normalize(rd);
-    // vec3 rayRight = normalize(cross(rayFront, normalize(up)));
-    // vec3 rayUp = cross(rayRight, rayFront);
-    // vec3 rayDir = rayFront + rayRight * offsets.x + rayUp * offsets.y;
-
-    // return normalize(rayDir);
 
     vec2 uv = gl_FragCoord.xy / resolution; // range 0...1
     uv -= 0.5; // -0.5...0.5
@@ -162,20 +151,6 @@ vec3 get_ray_direction() {
 
 #define FOV 45.
 void main() {
-    // vec2 uv = gl_FragCoord.xy / resolution; // range 0...1
-    // uv -= 0.5; // -0.5...0.5
-    // uv *= 2.0; // -1...1 so 0,0 is center of canves
-    // uv.x *= resolution.x / resolution.y;
-
-    // vec3 col = vec3(0);
-
-    // const float m_sensitivity = 1;
-    // vec2 m = (mouse * 2.0 - resolution) / resolution.y * m_sensitivity;
-
-
-    // vec3 ro = vec3(0, 3, 0); // ray origin
-    // vec3 rd = normalize(FOV * vec3(uv.x, uv.y - .2, 1)); // ray direction
-
     vec3 rayDir = get_ray_direction();
     vec3 raymarchColor = rayMarch(rayDir);
 

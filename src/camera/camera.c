@@ -35,30 +35,11 @@ void camera_toggle_mode() {
 }
 
 
-// TODO: ?
-// https://adrianb.io/2016/10/01/raymarching.html
-// Matrix camera_get_frustum_corners(Camera* camera) {
-//     float fov = camera->fovy;
-//     float aspect_ratio = (float)GetScreenWidth() / (float)GetScreenHeight();
-// 
-//     Matrix frustumCorners = MatrixIdentity();
-// 
-//     float fov_half = fov * 0.5f;
-// 
-//     float tan_fov = tanf(fov_half * DEG2RAD);
-// 
-//     // Vector3 toRight = Vector3Scale((Vector3){1, 0, 0}, tan_fov * aspect_ratio);
-//     // Vector3 toTop = Vector3Scale((Vector3){0, 1, 0}, tan_fov);
-// 
-//     // Vector3 topLeft = Vector3Add((Vector3){-1, 0, 1}, toTop);
-//     // Vector3 topRight = ;
-//     // Vector3 bottomRight = (-Vector3.forward + toRight - toTop);
-//     // Vector3 bottomLeft = (-Vector3.forward - toRight - toTop);
-// 
-//     // frustumCorners.SetRow(0, topLeft);
-//     // frustumCorners.SetRow(1, topRight);
-//     // frustumCorners.SetRow(2, bottomRight);
-//     // frustumCorners.SetRow(3, bottomLeft);
-// 
-//     return frustumCorners;
-// }
+void camera_update_quaternion(Camera3D* camera, float quaternion_out[4]) {
+
+    Quaternion q = QuaternionFromMatrix(MatrixTranspose(GetCameraMatrix(*camera)));
+    quaternion_out[0] = q.x;
+    quaternion_out[1] = q.y;
+    quaternion_out[2] = q.z;
+    quaternion_out[3] = q.w;
+}

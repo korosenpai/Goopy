@@ -19,3 +19,5 @@ void camera_update(Camera3D* camera);
 
 // toggle between free and perspective modes
 void camera_toggle_mode();
+
+void camera_update_quaternion(Camera3D* camera, float quaternion[4]);

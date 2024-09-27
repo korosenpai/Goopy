@@ -56,7 +56,6 @@ typedef struct Object {
 
     float* data;
     bool updated; // if some state changed since last frame, (if not skip updating in shader) // TODO: at end to optimize
-    void (* move) (const Vector3 delta);
     RayCollision (* select) (const struct Object* self, const Ray* ray); // collision is checked in manager
     void (* render) (const struct Object* self, bool is_selected);
 } Object;
