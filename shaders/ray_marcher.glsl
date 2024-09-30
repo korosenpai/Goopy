@@ -11,10 +11,11 @@ uniform vec3 cameraPos = vec3(0.0, 0.0, -3.0); // position of the camera in worl
 
 // uniform vec2 mouse; // maybe add some light where mouse is?
 uniform vec3 ro;
-uniform vec3 rd;
 uniform vec4 camera_quaternion;
 
 uniform vec3 box_pos;
+
+
 
 out vec4 fragColor;
 
@@ -34,13 +35,39 @@ float smin(float a, float b, float k) {
 
 // map()
 float sdf(vec3 pos) {
+    float ground = pos.y;
+
     float sphere1 = sdSphere(pos, vec3(0.), 1.0);
     float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
     float box1 = sdBox(pos - vec3(1.0 + sin(time), 1.0, 0.0), vec3(0.5)); // NOTE: cube size must be half
 
-    float d = smin(sphere1, sphere2, 1.0);
+    float d;
+    d = smin(ground, sphere1, 1.0);
+    d = smin(d, sphere2, 1.0);
     d = smin(d, box1, 1.5);
     return d; 
+}
+
+#define MAX_STEPS 32
+#define MINIMUM_HIT_DIST 0.01
+#define MAX_DIST 100.0
+float rayMarch(vec3 ro, vec3 rd) {
+    float d0 = 0;
+
+    for (int i = 0; i < MAX_STEPS && d0 < MAX_DIST; i++) {
+        vec3 p = ro + d0 * rd; // current marching location
+
+        float dS = sdf(p); // distance from scene
+        d0 += dS;
+
+        if (dS < MINIMUM_HIT_DIST) {
+            break;
+        };
+
+    }
+
+    return d0;
+
 }
 
 ///////////// LIGHTING /////////////
@@ -62,6 +89,7 @@ vec3 estimateNormal(vec3 p) {
     ));
 }
 
+// vec3 light = blinnPhong(p, lightPos, ambientColor, lightColor, globalAmbient, globalDiffuse, globalSpecular, globalSpecularExponent);
 vec3 blinnPhong(vec3 position, // hit point
                 vec3 lightPosition, // position of the light source
                 vec3 ambientCol, // ambient color
@@ -85,30 +113,45 @@ vec3 blinnPhong(vec3 position, // hit point
     return ambientFactor + diffuseFactor + specularFactor;
 }
 
-////////////////////////////////////
+vec3 get_normal(vec3 p) {
+    float d = sdf(p);
+    // get dist of points around p to get slope of curve and extract normal
+    vec2 e = vec2(.01, 0);
+    vec3 n = d - vec3( // trick to quickly get points around
+        sdf(p - e.xyy),
+        sdf(p - e.yxy),
+        sdf(p - e.yyx)
+    );
 
-#define MAX_STEPS 32
-#define MINIMUM_HIT_DIST 0.01
-#define MAX_DIST 100.0
-vec3 rayMarch(vec3 rayDir) {
-    vec3 hitcolor = vec3(1.0, 1.0, 1.0);
-    vec3 misscolor = vec3(0.0);
-
-    float depth = 0.0;
-    for (int i = 0; depth < MAX_DIST && i < MAX_STEPS; ++i) {
-        vec3 pos = ro + rayDir * depth;
-        float dist = sdf(pos);
-        if (dist < MINIMUM_HIT_DIST) {
-            // return hitcolor;
-            return blinnPhong(pos, lightPos, ambientColor, lightColor,
-                globalAmbient, globalDiffuse, globalSpecular, globalSpecularExponent);
-        }
-        depth += dist;
-    }
-
-
-    return misscolor;
+    return normalize(n);
 }
+
+float get_light(vec3 p) {
+    vec3 light_pos = vec3(0, 5, -6);
+    // light_pos.x += sin(time) * 4; // make it spin around
+    // light_pos.z -= cos(time) * 4;
+
+    vec3 light_direction = normalize(light_pos - p);
+    vec3 normal = get_normal(p);
+
+    // dot product of two vectors
+    // when perpendicular returns 0, when straight up parallel returns 1
+    // and if angled returns angle of light
+    float dif = dot(normal, light_direction); // range -1..1
+    dif = clamp(dif, 0, 1); // range: 0..1
+
+    // shadows
+    // raymarch to light source and if we hit something before we are in the shade
+    // also move p out from close to the object we hit to not kick out of the raymarch loop instantly
+    // if offset is not large enough there will be artifacts (ex remove * 2 and look at center of obj)
+    float d = rayMarch(p + normal * MINIMUM_HIT_DIST * 2, light_direction);
+    if (d < length(light_pos - p)) dif  *= .1; // hit an obj, so we are in shadow
+
+
+    return dif;
+}
+
+////////////////////////////////////
 
 
 mat2 rot2D(float angle) {
@@ -151,9 +194,23 @@ vec3 get_ray_direction() {
 
 #define FOV 45.
 void main() {
-    vec3 rayDir = get_ray_direction();
-    vec3 raymarchColor = rayMarch(rayDir);
+    vec3 rd = get_ray_direction();
+    // vec3 raymarchColor = rayMarch(rayDir);
+    // fragColor = vec4(raymarchColor, 1.0);
 
-    fragColor = vec4(raymarchColor, 1.0);
+    float dist = rayMarch(ro, rd);
+    vec3 p = ro + rd * dist;
+
+
+    // TODO: fix lighting destroying in the distance
+    float dif = get_light(p); // diffused lighting
+    vec3 col = vec3(dif);
+
+    // red cuz when looking to right x is positive -> (1, 0 ,0)
+    // same idea for green and black
+    // col = get_normal(p);
+
+
+    fragColor = vec4(col, 1);
 }
 

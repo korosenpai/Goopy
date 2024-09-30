@@ -33,8 +33,16 @@ typedef struct {
     float last_touched_position;
 } Axis;
 
+// TODO:?
+typedef enum {
+    AXIS_NONE,
+    AXIS_X,
+    AXIS_Y,
+    AXIS_Z,
+} AXIS_SELECTED;
+
 typedef struct {
-    int selected;
+    AXIS_SELECTED selected;
     Axis axes[3];
 } Axes;
 
