@@ -24,7 +24,7 @@ all: main
 # link them for final executable
 # ldflags are put after input file cuz it doesnt work otherwise (IDK why)
 main: $(OBJ) | $(OUTDIR)
-	@echo -n linking objects:
+	@echo -n "\033[0;34mlinking objects: \033[0m"
 	$(CC) $(CFLAGS) $? -o $(OUTFILE) $(LDFLAGS)
 
 # TODO: compile for gdb
@@ -33,7 +33,7 @@ main: $(OBJ) | $(OUTDIR)
 # for all c files found in SRCDIR create an object file in OBJDIR
 # and if folder obj not found create it
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-	@echo -n generating $@:
+	@echo -n "\033[0;32mgenerating $@: \033[0m" # codes to color green
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

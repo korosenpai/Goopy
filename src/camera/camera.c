@@ -1,16 +1,9 @@
 #include "camera.h"
 
-#include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 
-// only modes supported
-typedef enum {
-    PERSPECTIVE = CAMERA_PERSPECTIVE,
-    FREE = CAMERA_FREE,
-} CameraModes;
-
-static int _camera_mode = PERSPECTIVE;
+static int _camera_mode = STILL;
 
 Camera3D camera_create(Vector3 target, float position[3]) {
     return (Camera3D) {
@@ -18,7 +11,7 @@ Camera3D camera_create(Vector3 target, float position[3]) {
         .target = target,
         .position = (Vector3) { position[0], position[1], position[2] },
         .fovy = 45.0f,
-        .projection = PERSPECTIVE,
+        .projection = STILL,
     };
 }
 
@@ -27,9 +20,9 @@ void camera_update(Camera3D* camera) {
 }
 
 void camera_toggle_mode() {
-    _camera_mode = _camera_mode == PERSPECTIVE ? FREE : PERSPECTIVE;
+    _camera_mode = _camera_mode == STILL ? FREE : STILL;
 
-    if (_camera_mode == PERSPECTIVE) EnableCursor();
+    if (_camera_mode == STILL) EnableCursor();
     else DisableCursor();
 
 }

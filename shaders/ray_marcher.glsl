@@ -39,7 +39,7 @@ float sdf(vec3 pos) {
 
     float sphere1 = sdSphere(pos, vec3(0.), 1.0);
     float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
-    float box1 = sdBox(pos - vec3(1.0 + sin(time), 1.0, 0.0), vec3(0.5)); // NOTE: cube size must be half
+    float box1 = sdBox(pos - vec3(1.0 + sin(time), .6, 0.0), vec3(0.5)); // NOTE: cube size must be half
 
     float d;
     d = smin(ground, sphere1, 1.0);
@@ -201,10 +201,14 @@ void main() {
     float dist = rayMarch(ro, rd);
     vec3 p = ro + rd * dist;
 
+    vec3 col;
+    col = blinnPhong(p, lightPos, ambientColor, lightColor, globalAmbient,
+        globalDiffuse, globalSpecular, globalSpecularExponent);
+
 
     // TODO: fix lighting destroying in the distance
-    float dif = get_light(p); // diffused lighting
-    vec3 col = vec3(dif);
+    // float dif = get_light(p); // diffused lighting
+    // vec3 col = vec3(dif);
 
     // red cuz when looking to right x is positive -> (1, 0 ,0)
     // same idea for green and black

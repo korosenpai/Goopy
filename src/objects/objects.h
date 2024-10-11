@@ -6,7 +6,7 @@
 
 
 typedef enum {
-    GENERIC,
+    NONE,
     SPHERE,
     CUBE,
     OCTAHEDRON,
@@ -15,6 +15,9 @@ typedef enum {
     TORUS,
     ELLIPSOID,
 } OBJ_TYPE;
+#define OBJ_TYPE_STRING "None;Sphere;Cube;Octahedron;Capsule;Cylinder;Torus;Ellipsoid"
+// NOTE: when strings used by dropdownmenu, it will give result as int (perf for conversion to enum)
+// must be in same order as enum tho
 
 #define OBJ_SELECTED_COLOR GOLD
 

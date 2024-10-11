@@ -4,9 +4,12 @@
 #include <stdio.h>
 
 #include "camera/camera.h"
+#include "config_state/config_state.h"
 #include "constants.h"
+#include "objects/obj_modifier.h"
 #include "objects/objects.h"
 #include "objects/objects_manager.h"
+#include "ui/ui.h"
 #include "utils/utils.h" // NOTE: bug in lsp, it is used
 #include "utils/vectors/vector_operations.h"
 
@@ -34,15 +37,19 @@ int main(void) {
     int mouseLoc = GetShaderLocation(shader, "mouse");
     float mouse_pos[2] = {0, 0};
 
-    //////////////////////////// PREPARE CAMERA ////////////////////
+    //////////////////////////// PREPARATIONS ////////////////////
 
     Camera3D camera = camera_create((Vector3){0.0f, 0.0f, 0.0f}, ray_origin);
 
     float camera_quaternion[4] = {0};
     int cameraQuaternionLoc = GetShaderLocation(shader, "camera_quaternion");
 
+    ConfigurationState config_state = config_state_create();
+
+    ui_init();
 
     //////////////////////////// START ////////////////////
+
 
     manager_add_object(
         cube_create(
@@ -81,8 +88,18 @@ int main(void) {
 
         //////////////////////////// FIGURE MOUSE COLLISIONS ////////////////////
         Ray mouse_ray = GetScreenToWorldRay(GetMousePosition(), camera);
-        manager_select_obj(&mouse_ray);
-        manager_move_selected_obj(&mouse_ray);
+
+        if (config_state.camera_mode == STILL) {
+
+            if (config_state.edit_mode == EDIT) {
+                manager_select_obj(&mouse_ray);
+                manager_move_selected_obj(&mouse_ray);
+            }
+            else if (config_state.edit_mode == CREATE) {
+
+
+            }
+        }
 
 
         //////////////////////////// RENDER ////////////////////
@@ -98,7 +115,6 @@ int main(void) {
             if (!IsCursorHidden()) {
 
                 BeginMode3D(camera);
-                    // DrawSphere((Vector3){0.0f, 0.0f, 0.0f}, .1, BLACK); // origin point
 
                     manager_render_objects();
 
@@ -107,9 +123,10 @@ int main(void) {
 
             // 2d menu
             // manager_render_selected_obj_menu(&camera);
+            ui_render(&config_state);
 
 
-            DrawFPS(SCREEN_WIDTH - 100, 20);
+            // DrawFPS(SCREEN_WIDTH - 100, 20);
 
         EndDrawing();
 
@@ -117,11 +134,12 @@ int main(void) {
 
         if (IsKeyPressed(KEY_M)) camera_toggle_mode();
 
-
-
     }
 
+    //////////////////////////// UNLOAD AND CLOSE ////////////////////
+
     manager_destroy_objects();
+    ui_close();
 
     UnloadShader(shader);
     CloseWindow();
