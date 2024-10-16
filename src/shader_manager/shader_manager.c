@@ -1,25 +1,33 @@
 #include "shader_manager.h"
-
 #include <raylib.h>
 #include <stdio.h>
-#include <stdlib.h>
 
-// allow use of multiple shaders
-Shader* _loaded_shader = NULL;
 
-int resolutionLoc = -1;
 
-void shader_load(const char* vs_file, const char* fsfile) {
-    if (_loaded_shader != NULL) {
-        UnloadShader(*_loaded_shader);
+void shader_update_obj_data(Shader* shader, Object* objs, int* obj_count) {
+    // TODO: add all objs
+
+    int sphereInfoSizeLoc = GetShaderLocation(*shader, "sphereInfoSize");
+    SetShaderValue(*shader, sphereInfoSizeLoc, obj_count, SHADER_UNIFORM_INT);
+
+    for (int i = 0; i < *obj_count; i ++) {
+        if (!objs[i].updated) continue;
+
+        Object* obj = objs + i;
+
+        // WARN: only for spheres
+        switch (obj->type) {
+            case SPHERE:
+
+                break;
+
+            default:
+                break;
+        
+        }
+
+        printf("updated %d\n", i);
     }
 
-    *_loaded_shader = LoadShader(vs_file, fsfile);
-
-    resolutionLoc = GetShaderLocation(*_loaded_shader, "resolution");
-
 }
 
-void shader_set_uniforms() {
-
-}

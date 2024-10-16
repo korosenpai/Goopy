@@ -22,7 +22,10 @@ void camera_update(Camera3D* camera) {
 void camera_toggle_mode() {
     _camera_mode = _camera_mode == STILL ? FREE : STILL;
 
-    if (_camera_mode == STILL) EnableCursor();
+    if (_camera_mode == STILL) {
+        EnableCursor();
+        SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
+    }
     else DisableCursor();
 
 }

@@ -13,12 +13,16 @@ uniform vec3 cameraPos = vec3(0.0, 0.0, -3.0); // position of the camera in worl
 uniform vec3 ro;
 uniform vec4 camera_quaternion;
 
-uniform vec3 box_pos;
-
-
-
 out vec4 fragColor;
 
+//////////////////////////// OBJECT DATA ////////////////////////////
+uniform int spheres_count;
+uniform int sphereInfoSize;
+uniform float sphereInfo[];
+// {position1x, position1y, position1z, color1, radius1, ... positionn, colorn, radiusn}
+
+
+//////////////////////////// RAYMARCHING + SDFS ////////////////////////////
 float sdSphere(vec3 p, vec3 center, float radius) {
     return length(p - center) - radius;
 }
@@ -70,7 +74,7 @@ float rayMarch(vec3 ro, vec3 rd) {
 
 }
 
-///////////// LIGHTING /////////////
+//////////////////////////// LIGHTING ////////////////////////////
 // shamelessly copied from part 2
 uniform float globalAmbient = 0.1; // how strong is the ambient lightning
 uniform float globalDiffuse = 1.0; // how strong is the diffuse lightning
@@ -151,8 +155,7 @@ float get_light(vec3 p) {
     return dif;
 }
 
-////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////
 
 mat2 rot2D(float angle) {
     float s = sin(angle);

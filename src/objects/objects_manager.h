@@ -2,7 +2,10 @@
 
 #include "objects.h"
 #include "../constants.h"
+#include "../shader_manager/shader_manager.h"
 
+// gets called at every frame start to set updated to false
+void manager_reset_obj_update();
 
 void manager_select_obj(Ray* ray);
 void manager_move_selected_obj(Ray* ray);
@@ -14,3 +17,6 @@ void manager_destroy_objects();
 
 /// objects
 void manager_add_object(Object obj);
+
+// set uniforms in shader
+void manager_update_shader_data(Shader* shader);

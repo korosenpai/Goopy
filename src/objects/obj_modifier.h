@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <raylib.h>
 #include "objects.h"
 
 typedef enum {
@@ -10,4 +11,4 @@ typedef enum {
 } ObjEditModes;
 #define OBJ_EDIT_MODE_STRING "Edit;Create"
 
-void modifier_create_object(OBJ_TYPE* obj_type);
+Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type);

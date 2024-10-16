@@ -71,6 +71,9 @@ int main(void) {
         time = GetTime();
 
         camera_update(&camera);
+        ui_update(&config_state);
+
+        manager_reset_obj_update();
 
         //////////////////////////// UPDATE SHADER UNIFORMS ////////////////////
         vector3_ptr_to_array(&camera.position, ray_origin);
@@ -89,17 +92,6 @@ int main(void) {
         //////////////////////////// FIGURE MOUSE COLLISIONS ////////////////////
         Ray mouse_ray = GetScreenToWorldRay(GetMousePosition(), camera);
 
-        if (config_state.camera_mode == STILL) {
-
-            if (config_state.edit_mode == EDIT) {
-                manager_select_obj(&mouse_ray);
-                manager_move_selected_obj(&mouse_ray);
-            }
-            else if (config_state.edit_mode == CREATE) {
-
-
-            }
-        }
 
 
         //////////////////////////// RENDER ////////////////////
@@ -112,7 +104,7 @@ int main(void) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
             EndShaderMode();
 
-            if (!IsCursorHidden()) {
+            if (1 || !IsCursorHidden()) {
 
                 BeginMode3D(camera);
 
@@ -134,6 +126,23 @@ int main(void) {
 
         if (IsKeyPressed(KEY_M)) camera_toggle_mode();
 
+        if (config_state.camera_mode == STILL) {
+
+            if (config_state.edit_mode == EDIT) {
+                manager_select_obj(&mouse_ray);
+                manager_move_selected_obj(&mouse_ray);
+            }
+            else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && config_state.edit_mode == CREATE) {
+                Object new_object = modifier_create_object(&mouse_ray, &config_state.selected_shape);
+                if (new_object.type != OBJECT_NONE) {
+                    manager_add_object(new_object);
+                }
+
+
+            }
+        }
+
+        manager_update_shader_data(&shader);
     }
 
     //////////////////////////// UNLOAD AND CLOSE ////////////////////

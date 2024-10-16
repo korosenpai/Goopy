@@ -6,7 +6,7 @@
 
 
 typedef enum {
-    NONE,
+    OBJECT_NONE,
     SPHERE,
     CUBE,
     OCTAHEDRON,
@@ -73,10 +73,16 @@ typedef struct Object {
 
 void object_destroy(Object* obj);
 
+Object obj_none_create();
+
+#define OBJ_DEFAULT_COLOR CLITERAL(Color){0, 255, 0, 255}
+
 // SPHERE data = { radius }
+#define SPHERE_DEFAULT_RADIUS 1.0f
 Object sphere_create(Vector3 position, float radius, Color color);
 
 // CUBE data = { width, height, length }
+#define CUBE_DEFAULT_SIZE 1.0
 Object cube_create(Vector3 position, float width, float height, float length, Color color);
 
 

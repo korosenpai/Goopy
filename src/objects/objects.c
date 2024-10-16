@@ -133,6 +133,13 @@ void draw_obj_center(const Vector3* position) {
     DrawSphere(*position, 0.1, MAGENTA); // center of obj
 }
 
+Object obj_none_create() {
+    return (Object) {
+        .type = OBJECT_NONE,
+    };
+}
+
+
 //////////////////// SPHERES ////////////////////
 // data = { radius }
 void sphere_render(const Object* sphere, bool is_selected) {
@@ -150,11 +157,10 @@ Object sphere_create(Vector3 position, float radius, Color color) {
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
         .color = color,
         .data = obj_set_data_array(1, radius),
-        .updated = false,
+        .updated = true,
         .select = sphere_select,
         .render = sphere_render,
     };
-
 }
 
 //////////////////// CUBES  ////////////////////
@@ -194,7 +200,7 @@ Object cube_create(Vector3 position, float width, float height, float length, Co
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
         .color = color,
         .data = obj_set_data_array(3, width, height, length),
-        .updated = false,
+        .updated = true,
         .select = cube_select,
         .render = cube_render,
     };

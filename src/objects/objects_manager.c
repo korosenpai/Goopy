@@ -24,6 +24,13 @@ static int _obj_count = 0;
 static Object _objects[MAX_OBJ_COUNT] = {};
 
 
+void manager_reset_obj_update() {
+
+    for (int i = 0; i < _obj_count; i ++) {
+        _objects[i].updated = false;
+    }
+}
+
 void manager_move_selected_obj(Ray* ray) {
     if (_selected_obj < 0) return;
     axes_move(ray, _objects[_selected_obj].axes, &_objects[_selected_obj].position);
@@ -31,7 +38,6 @@ void manager_move_selected_obj(Ray* ray) {
 
 
 void manager_render_objects() {
-    // TODO: maybe calculate everything directly here?
     for (int i = 0; i < _obj_count; i ++) {
         OBJ_PTR_RENDER(_objects + i, i == _selected_obj);
 
@@ -55,7 +61,7 @@ void manager_select_obj(Ray* ray) {
     bool did_hit_obj = false;
     float closest_dist = 999;
 
-    // check if colliding with any sphere
+    // check if colliding with any obj
     RayCollision obj_hit = {0};
     for (int i = 0; i < _obj_count; i++) {
 
@@ -88,7 +94,7 @@ void manager_destroy_objects() {
 
 void manager_add_object(Object obj) {
     if (_obj_count + 1 == MAX_OBJ_COUNT) {
-        printf("max sphere creation reached\n");
+        printf("max object creation reached\n");
         return;
     }
 
@@ -96,3 +102,9 @@ void manager_add_object(Object obj) {
     _obj_count++;
 }
 
+
+
+////////////// SHADER //////////////
+void manager_update_shader_data(Shader* shader) {
+    shader_update_obj_data(shader, _objects, &_obj_count);
+}
