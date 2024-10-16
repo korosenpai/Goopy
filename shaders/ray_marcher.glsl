@@ -17,9 +17,9 @@ out vec4 fragColor;
 
 //////////////////////////// OBJECT DATA ////////////////////////////
 uniform int spheres_count;
-uniform int sphereInfoSize;
-uniform float sphereInfo[];
-// {position1x, position1y, position1z, color1, radius1, ... positionn, colorn, radiusn}
+int sphereInfoSize = 8;  // pos (3) + color (4) + radius
+uniform float sphereInfo[20 * 8];
+// {pos1x, pos1y, pos1z, color1, radius1, ... posnx..z, colorn, radiusn}
 
 
 //////////////////////////// RAYMARCHING + SDFS ////////////////////////////
@@ -46,9 +46,20 @@ float sdf(vec3 pos) {
     float box1 = sdBox(pos - vec3(1.0 + sin(time), .6, 0.0), vec3(0.5)); // NOTE: cube size must be half
 
     float d;
-    d = smin(ground, sphere1, 1.0);
-    d = smin(d, sphere2, 1.0);
-    d = smin(d, box1, 1.5);
+    d = ground;
+    // d = smin(ground, ground, 1.0);
+    // d = smin(d, sphere2, 1.0);
+    // d = smin(d, box1, 1.5);
+
+    for (int i = 0; i < spheres_count; i++) {
+        float x = sphereInfo[i * 3];
+        float y = sphereInfo[i * 3 + 1];
+        float z = sphereInfo[i * 3 + 2];
+        
+        float sphere = sdSphere(pos, vec3(x, y, z), 1.0);
+        d = smin(d, sphere, 1.0);
+    }
+
     return d; 
 }
 

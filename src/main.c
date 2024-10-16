@@ -51,18 +51,18 @@ int main(void) {
     //////////////////////////// START ////////////////////
 
 
-    manager_add_object(
-        cube_create(
-            (Vector3){1.0f, 1.0f, 0.0f},
-            1, 1, 1, RED 
-        )
-    );
-    manager_add_object(
-        sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
-    );
-    manager_add_object(
-        sphere_create((Vector3){0}, 1.0f, RED)
-    );
+    // manager_add_object(
+    //     cube_create(
+    //         (Vector3){1.0f, 1.0f, 0.0f},
+    //         1, 1, 1, RED 
+    //     )
+    // );
+    // manager_add_object(
+    //     sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
+    // );
+    // manager_add_object(
+    //     sphere_create((Vector3){0}, 1.0f, RED)
+    // );
 
 
     // Main game loop
@@ -104,7 +104,7 @@ int main(void) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
             EndShaderMode();
 
-            if (1 || !IsCursorHidden()) {
+            if (!IsCursorHidden()) {
 
                 BeginMode3D(camera);
 
