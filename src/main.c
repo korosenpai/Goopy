@@ -3,12 +3,16 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "camera/camera.h"
-#include "config_state/config_state.h"
 #include "constants.h"
+#include "camera/camera.h"
+#include "mouse/mouse.h"
+#include "config_state/config_state.h"
+
 #include "objects/obj_modifier.h"
 #include "objects/objects.h"
 #include "objects/objects_manager.h"
+#include "shader_manager/shader_manager.h"
+
 #include "ui/ui.h"
 #include "utils/utils.h" // NOTE: bug in lsp, it is used
 #include "utils/vectors/vector_operations.h"
@@ -23,6 +27,8 @@ int main(void) {
 
     //////////////////////////// PREPARE SHADER ////////////////////
     Shader shader = LoadShader(0, "shaders/ray_marcher.glsl");
+
+    shader_setup(&shader);
 
     float resolution[2] = { SCREEN_WIDTH, SCREEN_HEIGHT };
     int resolutionLoc = GetShaderLocation(shader, "resolution");
@@ -48,21 +54,26 @@ int main(void) {
 
     ui_init();
 
+    Mouse mouse = mouse_create();
+
     //////////////////////////// START ////////////////////
 
 
-    // manager_add_object(
-    //     cube_create(
-    //         (Vector3){1.0f, 1.0f, 0.0f},
-    //         1, 1, 1, RED 
-    //     )
-    // );
-    // manager_add_object(
-    //     sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
-    // );
-    // manager_add_object(
-    //     sphere_create((Vector3){0}, 1.0f, RED)
-    // );
+    manager_add_object(
+        &shader,
+        cube_create(
+            (Vector3){1.0f, 1.0f, 0.0f},
+            1, 1, 1, RED 
+        )
+    );
+    manager_add_object(
+        &shader,
+        sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
+    );
+    manager_add_object(
+        &shader,
+        sphere_create((Vector3){0}, 1.0f, RED)
+    );
 
 
     // Main game loop
@@ -70,8 +81,10 @@ int main(void) {
         // deltatime = GetFrameTime();
         time = GetTime();
 
+        mouse_update(&mouse);
+
         camera_update(&camera);
-        ui_update(&config_state);
+        // ui_update(&config_state);
 
         manager_reset_obj_update();
 
@@ -99,7 +112,8 @@ int main(void) {
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
-            // raymarcher
+
+            // raymarcher on whole screen
             BeginShaderMode(shader);
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
             EndShaderMode();
@@ -114,13 +128,17 @@ int main(void) {
             }
 
             // 2d menu
-            // manager_render_selected_obj_menu(&camera);
             ui_render(&config_state);
 
 
-            // DrawFPS(SCREEN_WIDTH - 100, 20);
+            // FPS screen
+            DrawRectangle(SCREEN_WIDTH - 120, 10, 110, 40, BLACK);
+            DrawFPS(SCREEN_WIDTH - 100, 20);
+
+
 
         EndDrawing();
+
 
         //////////////////////////// HANDLE INPUTS ////////////////////
 
@@ -128,26 +146,26 @@ int main(void) {
 
         if (config_state.camera_mode == STILL) {
 
-            if (config_state.edit_mode == EDIT) {
+            if (mouse.left_down && config_state.edit_mode == EDIT) {
                 manager_select_obj(&mouse_ray);
                 manager_move_selected_obj(&mouse_ray);
             }
-            else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && config_state.edit_mode == CREATE) {
+            else if (mouse.left_released && config_state.edit_mode == CREATE) {
                 Object new_object = modifier_create_object(&mouse_ray, &config_state.selected_shape);
                 if (new_object.type != OBJECT_NONE) {
-                    manager_add_object(new_object);
+                    manager_add_object(&shader, new_object);
                 }
 
 
             }
         }
 
-        manager_update_shader_data(&shader);
     }
 
     //////////////////////////// UNLOAD AND CLOSE ////////////////////
 
     manager_destroy_objects();
+    shader_close();
     ui_close();
 
     UnloadShader(shader);

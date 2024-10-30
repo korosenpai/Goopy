@@ -16,11 +16,14 @@ uniform vec4 camera_quaternion;
 out vec4 fragColor;
 
 //////////////////////////// OBJECT DATA ////////////////////////////
-uniform int spheres_count;
-int sphereInfoSize = 8;  // pos (3) + color (4) + radius
-uniform float sphereInfo[20 * 8];
+uniform int spheresCount;
+int sphereElementsCount = 3;  // pos (3) + color (4) + radius // TODO: make it uniform?
+uniform float sphereInfoArr[20 * 8];
 // {pos1x, pos1y, pos1z, color1, radius1, ... posnx..z, colorn, radiusn}
 
+uniform int cubeCount;
+int cubeElementsCount= 3;  // pos (3) + color (4) + radius // TODO: make it uniform?
+uniform float cubeInfoArr[20 * 8];
 
 //////////////////////////// RAYMARCHING + SDFS ////////////////////////////
 float sdSphere(vec3 p, vec3 center, float radius) {
@@ -41,9 +44,9 @@ float smin(float a, float b, float k) {
 float sdf(vec3 pos) {
     float ground = pos.y;
 
-    float sphere1 = sdSphere(pos, vec3(0.), 1.0);
-    float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
-    float box1 = sdBox(pos - vec3(1.0 + sin(time), .6, 0.0), vec3(0.5)); // NOTE: cube size must be half
+    // float sphere1 = sdSphere(pos, vec3(0.), 1.0);
+    // float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
+    // float box1 = sdBox(pos - vec3(1.0 + sin(time), .6, 0.0), vec3(0.5)); // NOTE: cube size must be half
 
     float d;
     d = ground;
@@ -51,15 +54,24 @@ float sdf(vec3 pos) {
     // d = smin(d, sphere2, 1.0);
     // d = smin(d, box1, 1.5);
 
-    for (int i = 0; i < spheres_count; i++) {
-        float x = sphereInfo[i * 3];
-        float y = sphereInfo[i * 3 + 1];
-        float z = sphereInfo[i * 3 + 2];
+    /////// DRAW SPHERES ///////
+    for (int i = 0; i < spheresCount; i++) {
+        float x = sphereInfoArr[i * sphereElementsCount];
+        float y = sphereInfoArr[i * sphereElementsCount + 1];
+        float z = sphereInfoArr[i * sphereElementsCount + 2];
         
         float sphere = sdSphere(pos, vec3(x, y, z), 1.0);
         d = smin(d, sphere, 1.0);
     }
 
+    for (int i = 0; i < cubeCount; i++) {
+        float x = cubeInfoArr[i * cubeElementsCount];
+        float y = cubeInfoArr[i * cubeElementsCount + 1];
+        float z = cubeInfoArr[i * cubeElementsCount + 2];
+        
+        float cube = sdBox(pos - vec3(x, y, z), vec3(0.5));
+        d = smin(d, cube, 1.0);
+    }
     return d; 
 }
 

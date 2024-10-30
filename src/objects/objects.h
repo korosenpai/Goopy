@@ -56,6 +56,7 @@ void axes_render(Axis axes[3], Vector3 obj_pos);
 void axes_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs to be moved
 
 
+// TODO: add id (position in array; for shader)
 #define OBJ_PTR_RENDER(obj_ptr, is_selected) ((obj_ptr)->render(obj_ptr, is_selected))
 #define OBJ_RENDER(obj, is_selected) ((obj).render(&(obj), is_selected))
 #define OBJ_PTR_SELECT(obj, ray_ptr) ((obj)->select(obj, ray_ptr))
@@ -82,7 +83,7 @@ Object obj_none_create();
 Object sphere_create(Vector3 position, float radius, Color color);
 
 // CUBE data = { width, height, length }
-#define CUBE_DEFAULT_SIZE 1.0
+#define CUBE_DEFAULT_SIZE 1.0f
 Object cube_create(Vector3 position, float width, float height, float length, Color color);
 
 

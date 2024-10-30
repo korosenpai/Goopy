@@ -1,53 +1,59 @@
 #include "shader_manager.h"
 #include <raylib.h>
+#include <stdlib.h>
+#include <assert.h>
 
-#include "../constants.h"
+#include "obj_shader_data/obj_shader_data.h"
 
-static int _spheres_count_loc;
-static int _spheres_count = 0;
-static int _sphere_arr_size = 0;
-static float _sphere_arr[MAX_OBJ_COUNT * 8];
 
-void shader_update_obj_data(Shader* shader, Object* objs, int* obj_count) {
-    // TODO: add all objs
+// SAVE OBJS IN ObjTypeShaderData* arr
+// in order of enum to send something like position generally without rewrititng it 
+// in every case 
+// static ObjTypeShaderData spheres;
+// static ObjTypeShaderData cubes;
 
-    _spheres_count_loc = GetShaderLocation(*shader, "spheres_count");
+// TODO: save in ObjTypeShaderData[7] and access proper array with arr[obj->type - 1] // -1 to remove NONE, must be in same order as objects
+#define OBJ_DATA_ARRAY_COUNT 2
+static ObjTypeShaderData* objDataArrays;
 
-    // NOTE: EVERYTHING GETS RECALCULATED EVERY FRAME FOR NOW
-    // reset arrays;
-    _sphere_arr_size = 0;
-    _spheres_count = 0;
 
-    for (int i = 0; i < *obj_count; i ++) {
-        // if (!objs[i].updated) continue;
+void shader_setup(Shader* shader) {
 
-        Object* obj = objs + i;
-
-        // NOTE: arrays should be {posx..z, color, data*}
-        // WARN: only for spheres
-        switch (obj->type) {
-            case SPHERE:
-                _spheres_count++;
-
-                _sphere_arr[_sphere_arr_size] = obj->position.x;
-                _sphere_arr[_sphere_arr_size + 1] = obj->position.y;
-                _sphere_arr[_sphere_arr_size + 2] = obj->position.z;
-                _sphere_arr_size += 3;
-
-                // float arr[] = {obj->position.x, obj->position.y, obj->position.z};
-                // PASS ARRAY AS {posx, posy, posz, colr, colg, colb, cola, radius}
-                int _sphereInfoLoc = GetShaderLocation(*shader, "sphereInfo");
-                SetShaderValueV(*shader, _sphereInfoLoc, _sphere_arr, SHADER_ATTRIB_FLOAT, _sphere_arr_size);
-
-                break;
-
-            default:
-                break;
-        
-        }
-
-        SetShaderValue(*shader, _spheres_count_loc, &_spheres_count, SHADER_UNIFORM_INT);
-    }
-
+    objDataArrays = malloc(sizeof(ObjTypeShaderData) * OBJ_DATA_ARRAY_COUNT);
+    objDataArrays[0] = obj_shader_data_create(3, shader, "spheresCount", "sphereInfoArr"); // spheres
+    objDataArrays[1] = obj_shader_data_create(3, shader, "cubeCount", "cubeInfoArr");  //cubes 
 }
 
+void shader_add_obj(Shader* shader, Object* obj) {
+    // get correct array for obj type
+    assert(obj->type <= OBJ_DATA_ARRAY_COUNT); // TODO: remove when all objs implemented
+    ObjTypeShaderData* data_arr = objDataArrays + obj->type - 1;
+
+    // add position
+    data_arr->obj_count++;
+    data_arr->arr[data_arr->arr_size] = obj->position.x;
+    data_arr->arr[data_arr->arr_size + 1] = obj->position.y;
+    data_arr->arr[data_arr->arr_size + 2] = obj->position.z;
+    data_arr->arr_size += 3;
+
+    // add vec4 color
+
+    // add data array
+
+    // update obj count and obj array (only added obj)
+    SetShaderValue(*shader, data_arr->obj_count_loc, &data_arr->obj_count, SHADER_UNIFORM_INT);
+    SetShaderValueV(
+        *shader,
+        // TODO: set only one obj value
+        data_arr->arr_loc,
+        data_arr->arr,
+        SHADER_ATTRIB_FLOAT,
+        data_arr->arr_size
+    );
+}
+
+void shader_close() {
+
+    free(objDataArrays);
+
+}

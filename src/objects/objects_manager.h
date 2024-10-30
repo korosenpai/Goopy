@@ -16,7 +16,5 @@ void manager_render_selected_obj_menu(Camera3D* camera);
 void manager_destroy_objects();
 
 /// objects
-void manager_add_object(Object obj);
+void manager_add_object(Shader* shader, Object obj);
 
-// set uniforms in shader
-void manager_update_shader_data(Shader* shader);

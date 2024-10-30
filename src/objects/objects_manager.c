@@ -34,6 +34,7 @@ void manager_reset_obj_update() {
 void manager_move_selected_obj(Ray* ray) {
     if (_selected_obj < 0) return;
     axes_move(ray, _objects[_selected_obj].axes, &_objects[_selected_obj].position);
+    // TODO: here update shader for this obj (add id to object, so to be found (position in array))
 }
 
 
@@ -55,7 +56,6 @@ void manager_render_selected_obj_menu(Camera3D* camera) {
 
 // determine what obj the mouse is hitting and if mouse is pressed select it
 void manager_select_obj(Ray* ray) {
-    if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) return;
 
     // find obj hit closest to cursor
     bool did_hit_obj = false;
@@ -92,19 +92,17 @@ void manager_destroy_objects() {
 
 ////////////// ADD OBJECTS //////////////
 
-void manager_add_object(Object obj) {
+void manager_add_object(Shader* shader, Object obj) {
     if (_obj_count + 1 == MAX_OBJ_COUNT) {
         printf("max object creation reached\n");
         return;
     }
 
     _objects[_obj_count] = obj;
+    shader_add_obj(shader, _objects + _obj_count);
     _obj_count++;
+
 }
 
 
 
-////////////// SHADER //////////////
-void manager_update_shader_data(Shader* shader) {
-    shader_update_obj_data(shader, _objects, &_obj_count);
-}

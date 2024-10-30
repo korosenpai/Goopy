@@ -5,4 +5,4 @@
 #define SCREEN_HEIGHT 900.0
 
 // for each type
-#define MAX_OBJ_COUNT 20
+#define MAX_OBJ_COUNT 100

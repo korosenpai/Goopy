@@ -18,5 +18,4 @@ void ui_init();
 void ui_close();
 
 // NOTE: render and udpate
-void ui_update(ConfigurationState* state);
 void ui_render(ConfigurationState* state);

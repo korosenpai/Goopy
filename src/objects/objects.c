@@ -166,10 +166,10 @@ Object sphere_create(Vector3 position, float radius, Color color) {
 //////////////////// CUBES  ////////////////////
 
 void cube_render(const Object* cube, bool is_selected) {
-    float width = cube->data[0];
-    float height = cube->data[1];
-    float length = cube->data[2];
-    DrawCubeWires(cube->position, width, height, length, is_selected ? OBJ_SELECTED_COLOR : cube->color);
+    float* width = cube->data;
+    float* height = cube->data + 1;
+    float* length = cube->data + 2;
+    DrawCubeWires(cube->position, *width, *height, *length, is_selected ? OBJ_SELECTED_COLOR : cube->color);
     draw_obj_center(&cube->position);
 }
 
