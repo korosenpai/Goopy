@@ -16,14 +16,18 @@ uniform vec4 camera_quaternion;
 out vec4 fragColor;
 
 //////////////////////////// OBJECT DATA ////////////////////////////
+#define MAX_OBJ_COUNT 100
+#define COLOR_SIZE 4
+
 uniform int spheresCount;
-int sphereElementsCount = 3;  // pos (3) + color (4) + radius // TODO: make it uniform?
-uniform float sphereInfoArr[20 * 8];
+// NOTE: passed by obj_shader_data_create(), IT IS A CONSTANT
+uniform int sphereElementsCount;  // pos (3) + color (4) + radius
+uniform float sphereInfoArr[MAX_OBJ_COUNT * 8];
 // {pos1x, pos1y, pos1z, color1, radius1, ... posnx..z, colorn, radiusn}
 
 uniform int cubeCount;
-int cubeElementsCount= 3;  // pos (3) + color (4) + radius // TODO: make it uniform?
-uniform float cubeInfoArr[20 * 8];
+uniform int cubeElementsCount;  // pos (3) + color (4) + width + height + length
+uniform float cubeInfoArr[MAX_OBJ_COUNT * 8];
 
 //////////////////////////// RAYMARCHING + SDFS ////////////////////////////
 // https://iquilezles.org/articles/distfunctions/
@@ -51,23 +55,19 @@ float smin(float a, float b, float k) {
 float sdf(vec3 pos) {
     float ground = pos.y;
 
-    // float sphere1 = sdSphere(pos, vec3(0.), 1.0);
-    // float sphere2 = sdSphere(pos, vec3(2.0, 3.0, 5.0), 2.0);
-    // float box1 = sdBox(pos - vec3(1.0 + sin(time), .6, 0.0), vec3(0.5)); // NOTE: cube size must be half
-
     float d;
     d = ground;
-    // d = smin(ground, ground, 1.0);
-    // d = smin(d, sphere2, 1.0);
-    // d = smin(d, box1, 1.5);
 
     /////// DRAW SPHERES ///////
     for (int i = 0; i < spheresCount; i++) {
         float x = sphereInfoArr[i * sphereElementsCount];
         float y = sphereInfoArr[i * sphereElementsCount + 1];
         float z = sphereInfoArr[i * sphereElementsCount + 2];
-        
-        float sphere = sdSphere(pos, vec3(x, y, z), 1.0);
+
+        // NOTE: data is put post color, so you must skip it and continue the number chain
+        float radius = sphereInfoArr[i * sphereElementsCount + COLOR_SIZE + 3];
+
+        float sphere = sdSphere(pos, vec3(x, y, z), radius);
         d = smin(d, sphere, 1.0);
     }
 
@@ -75,8 +75,13 @@ float sdf(vec3 pos) {
         float x = cubeInfoArr[i * cubeElementsCount];
         float y = cubeInfoArr[i * cubeElementsCount + 1];
         float z = cubeInfoArr[i * cubeElementsCount + 2];
-        
-        float cube = sdBox(pos - vec3(x, y, z), vec3(0.5));
+
+        float width = cubeInfoArr[i * cubeElementsCount + COLOR_SIZE + 3];
+        float height = cubeInfoArr[i * cubeElementsCount + COLOR_SIZE + 4];
+        float length = cubeInfoArr[i * cubeElementsCount + COLOR_SIZE + 5];
+
+        // NOTE: cube size must be half
+        float cube = sdBox(pos - vec3(x, y, z), vec3(width / 2, height / 2, length / 2));
         d = smin(d, cube, 1.0);
     }
     return d; 

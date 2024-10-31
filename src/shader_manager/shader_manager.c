@@ -1,5 +1,6 @@
 #include "shader_manager.h"
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -24,8 +25,8 @@ static ObjTypeShaderData* objDataArrays;
 void shader_setup(Shader* shader) {
 
     objDataArrays = malloc(sizeof(ObjTypeShaderData) * OBJ_DATA_ARRAY_COUNT);
-    objDataArrays[0] = obj_shader_data_create(POSITION_SIZE, shader, "spheresCount", "sphereInfoArr"); // spheres
-    objDataArrays[1] = obj_shader_data_create(POSITION_SIZE, shader, "cubeCount", "cubeInfoArr");  //cubes 
+    objDataArrays[0] = obj_shader_data_create(POSITION_SIZE + COLOR_SIZE + 1, shader, "spheresCount", "sphereElementsCount", "sphereInfoArr");
+    objDataArrays[1] = obj_shader_data_create(POSITION_SIZE + COLOR_SIZE + 3, shader, "cubeCount", "cubeElementsCount","cubeInfoArr"); 
 }
 
 void shader_add_obj(Shader* shader, Object* obj) {
@@ -41,10 +42,20 @@ void shader_add_obj(Shader* shader, Object* obj) {
     data_arr->arr_size += 3;
 
     // add vec4 color
+    data_arr->arr[data_arr->arr_size] = obj->color.r;
+    data_arr->arr[data_arr->arr_size + 1] = obj->color.g;
+    data_arr->arr[data_arr->arr_size + 2] = obj->color.b;
+    data_arr->arr[data_arr->arr_size + 3] = obj->color.a;
+    data_arr->arr_size += 4;
 
 
     // add data array
     // assert(obj->data_arr_length == obj_element_count -3(pos) -4(colors))
+
+    for (int i = 0; i < obj->data_arr_length; i++) {
+        data_arr->arr[data_arr->arr_size + i] = obj->data[i];
+    }
+    data_arr->arr_size += obj->data_arr_length;
 
     // update obj count and obj array (only added obj)
     SetShaderValue(*shader, data_arr->obj_count_loc, &data_arr->obj_count, SHADER_UNIFORM_INT);

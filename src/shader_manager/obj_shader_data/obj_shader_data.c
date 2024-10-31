@@ -4,7 +4,17 @@
 #include <stdlib.h>
 
 // TODO: change to not pass loc but uniform name, and then you call the getshaderlocation function
-ObjTypeShaderData obj_shader_data_create(int obj_element_count, Shader* shader, const char* obj_count_uniform, const char* arr_uniform) {
+ObjTypeShaderData obj_shader_data_create(
+    int obj_element_count, Shader* shader,
+    const char* obj_count_uniform, const char* elements_count_uniform, const char* arr_uniform
+) {
+    SetShaderValue(
+        *shader,
+        GetShaderLocation(*shader, elements_count_uniform),
+        &obj_element_count,
+        SHADER_UNIFORM_INT
+    );
+
     return (ObjTypeShaderData){
         .obj_elements_count  = obj_element_count,
 

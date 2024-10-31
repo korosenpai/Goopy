@@ -63,12 +63,12 @@ int main(void) {
         &shader,
         cube_create(
             (Vector3){1.0f, 1.0f, 0.0f},
-            1, 1, 1, RED 
+            1, 2, 3, RED 
         )
     );
     manager_add_object(
         &shader,
-        sphere_create((Vector3){2, 3, 5}, 1.0f, VIOLET)
+        sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
     );
     manager_add_object(
         &shader,
