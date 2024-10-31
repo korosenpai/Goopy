@@ -68,7 +68,7 @@ int main(void) {
     );
     manager_add_object(
         &shader,
-        sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
+        sphere_create((Vector3){2, 3, 5}, 1.0f, VIOLET)
     );
     manager_add_object(
         &shader,
@@ -128,7 +128,7 @@ int main(void) {
             }
 
             // 2d menu
-            ui_render(&config_state);
+            ui_render_and_update(&config_state, &mouse);
 
 
             // FPS screen
@@ -146,11 +146,11 @@ int main(void) {
 
         if (config_state.camera_mode == STILL) {
 
-            if (mouse.left_down && config_state.edit_mode == EDIT) {
+            if (IS_LEFT_MOUSE_DOWN(mouse) && config_state.edit_mode == EDIT) {
                 manager_select_obj(&mouse_ray);
                 manager_move_selected_obj(&mouse_ray);
             }
-            else if (mouse.left_released && config_state.edit_mode == CREATE) {
+            else if (IS_LEFT_MOUSE_RELEASED(mouse) && config_state.edit_mode == CREATE) {
                 Object new_object = modifier_create_object(&mouse_ray, &config_state.selected_shape);
                 if (new_object.type != OBJECT_NONE) {
                     manager_add_object(&shader, new_object);

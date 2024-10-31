@@ -156,8 +156,11 @@ Object sphere_create(Vector3 position, float radius, Color color) {
         .position = position,
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
         .color = color,
-        .data = obj_set_data_array(1, radius),
         .updated = true,
+
+        .data_arr_length = 1,
+        .data = obj_set_data_array(1, radius),
+
         .select = sphere_select,
         .render = sphere_render,
     };
@@ -199,8 +202,11 @@ Object cube_create(Vector3 position, float width, float height, float length, Co
         .position = position,
         .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
         .color = color,
-        .data = obj_set_data_array(3, width, height, length),
         .updated = true,
+
+        .data_arr_length = 3,
+        .data = obj_set_data_array(3, width, height, length),
+
         .select = cube_select,
         .render = cube_render,
     };

@@ -1,6 +1,10 @@
 #include "mouse.h"
 #include <raylib.h>
 
+static bool left_down = false;
+static bool left_pressed = false;
+static bool left_released = false;
+static bool left_ui_pressed = false;
 
 Mouse mouse_create() {
     return (Mouse) {
@@ -11,6 +15,8 @@ Mouse mouse_create() {
         .right_down = false,
         .right_pressed = false,
         .right_released = false,
+
+        .ui_clicked = false,
     };
 }
 
@@ -23,3 +29,4 @@ void mouse_update(Mouse* mouse) {
     mouse->right_pressed = IsMouseButtonPressed(MOUSE_RIGHT_BUTTON);
     mouse->right_released = IsMouseButtonReleased(MOUSE_RIGHT_BUTTON);
 }
+

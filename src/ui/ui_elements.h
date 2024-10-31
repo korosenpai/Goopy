@@ -3,6 +3,8 @@
 #include <raylib.h>
 #include <stdbool.h>
 
+#include "../mouse/mouse.h"
+
 #include "../libs/raygui.h"
 
 typedef struct {
@@ -14,4 +16,4 @@ typedef struct {
 
 DropdownMenu dropdown_menu_create(Rectangle bounds, const char* text);
 
-void dropdown_menu_update(DropdownMenu* dropdown_menu);
+void dropdown_menu_update(DropdownMenu* dm, Mouse* mouse);

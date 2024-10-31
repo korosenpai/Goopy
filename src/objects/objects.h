@@ -65,9 +65,11 @@ typedef struct Object {
     Vector3 position;
     Axis axes[3];
     Color color;
-
-    float* data;
     bool updated; // if some state changed since last frame, (if not skip updating in shader) // TODO: at end to optimize
+
+    int data_arr_length;
+    float* data;
+
     RayCollision (* select) (const struct Object* self, const Ray* ray); // collision is checked in manager
     void (* render) (const struct Object* self, bool is_selected);
 } Object;

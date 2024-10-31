@@ -26,12 +26,19 @@ int cubeElementsCount= 3;  // pos (3) + color (4) + radius // TODO: make it unif
 uniform float cubeInfoArr[20 * 8];
 
 //////////////////////////// RAYMARCHING + SDFS ////////////////////////////
+// https://iquilezles.org/articles/distfunctions/
 float sdSphere(vec3 p, vec3 center, float radius) {
     return length(p - center) - radius;
 }
 
 float sdBox(vec3 p, vec3 size) {
     return length(max(abs(p) - size, 0));
+}
+
+float sdTorus(vec3 p, float inner_radius, float large_radius) {
+    // two circles, one bigger and one smaller that revolves around bigger
+    float x = length(p.xz) - large_radius;
+    return length(vec2(x, p.y)) - inner_radius;
 }
 
 float smin(float a, float b, float k) {

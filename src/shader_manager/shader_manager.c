@@ -12,6 +12,10 @@
 // static ObjTypeShaderData spheres;
 // static ObjTypeShaderData cubes;
 
+// constants for shader array numbers
+#define POSITION_SIZE 3
+#define COLOR_SIZE 4
+
 // TODO: save in ObjTypeShaderData[7] and access proper array with arr[obj->type - 1] // -1 to remove NONE, must be in same order as objects
 #define OBJ_DATA_ARRAY_COUNT 2
 static ObjTypeShaderData* objDataArrays;
@@ -20,8 +24,8 @@ static ObjTypeShaderData* objDataArrays;
 void shader_setup(Shader* shader) {
 
     objDataArrays = malloc(sizeof(ObjTypeShaderData) * OBJ_DATA_ARRAY_COUNT);
-    objDataArrays[0] = obj_shader_data_create(3, shader, "spheresCount", "sphereInfoArr"); // spheres
-    objDataArrays[1] = obj_shader_data_create(3, shader, "cubeCount", "cubeInfoArr");  //cubes 
+    objDataArrays[0] = obj_shader_data_create(POSITION_SIZE, shader, "spheresCount", "sphereInfoArr"); // spheres
+    objDataArrays[1] = obj_shader_data_create(POSITION_SIZE, shader, "cubeCount", "cubeInfoArr");  //cubes 
 }
 
 void shader_add_obj(Shader* shader, Object* obj) {
@@ -38,7 +42,9 @@ void shader_add_obj(Shader* shader, Object* obj) {
 
     // add vec4 color
 
+
     // add data array
+    // assert(obj->data_arr_length == obj_element_count -3(pos) -4(colors))
 
     // update obj count and obj array (only added obj)
     SetShaderValue(*shader, data_arr->obj_count_loc, &data_arr->obj_count, SHADER_UNIFORM_INT);
