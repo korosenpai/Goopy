@@ -8,6 +8,7 @@ static bool left_ui_pressed = false;
 
 Mouse mouse_create() {
     return (Mouse) {
+        .position = GetMousePosition(),
         .left_down = false,
         .left_pressed = false,
         .left_released = false,
@@ -21,6 +22,8 @@ Mouse mouse_create() {
 }
 
 void mouse_update(Mouse* mouse) {
+    mouse->position = GetMousePosition();
+
     mouse->left_down = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
     mouse->left_pressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
     mouse->left_released = IsMouseButtonReleased(MOUSE_LEFT_BUTTON);

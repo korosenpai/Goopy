@@ -68,6 +68,13 @@ int main(void) {
     );
     manager_add_object(
         &shader,
+        cube_create(
+            (Vector3){-3.0f, 1.0f, 2.0f},
+            1, 1, 1, RED 
+        )
+    );
+    manager_add_object(
+        &shader,
         sphere_create((Vector3){2, 3, 5}, 2.0f, VIOLET)
     );
     manager_add_object(
@@ -84,7 +91,6 @@ int main(void) {
         mouse_update(&mouse);
 
         camera_update(&camera);
-        // ui_update(&config_state);
 
         manager_reset_obj_update();
 

@@ -8,9 +8,9 @@
 #include "../config_state/config_state.h"
 #include "../mouse/mouse.h"
 
-#include "ui_elements.h"
-
-#define FONT_SIZE 32
+#include "elements/toggle_group/tg.h"
+#include "elements/dropdown_menu/dm.h"
+#include "elements/collapsable_panel/cp.h"
 
 #define TOP_OFFSET 10
 #define LEFT_OFFSET 10

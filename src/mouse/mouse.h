@@ -1,8 +1,11 @@
 #pragma once
 
+#include <raylib.h>
 #include <stdbool.h>
 
 typedef struct {
+    Vector2 position;
+
     bool left_down;
     bool left_pressed;
     bool left_released;
