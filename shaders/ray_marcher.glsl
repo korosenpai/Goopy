@@ -1,4 +1,4 @@
-#version 400
+#version 460
 // https://cgmathprog.home.blog/2019/08/31/raymarching-from-scratch-part-1/
 
 precision highp float;
