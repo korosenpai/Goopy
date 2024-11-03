@@ -5,15 +5,16 @@
 #include <stdio.h>
 
 // NOTE: implement in ui to change
-#define OBJ_PLACING_DISTANCE 5.0
+#define DEFAULT_OBJ_PLACING_DISTANCE 5.0
 
-Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type) {
+Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type, float* obj_placing_dist) {
     // if it remains like this something has gone wong
     Object res;
 
     Vector3 placing_pos = Vector3Add(
         mouse_ray->position, 
-        Vector3Scale(mouse_ray->direction, OBJ_PLACING_DISTANCE));
+        Vector3Scale(mouse_ray->direction, *obj_placing_dist)
+    );
 
     switch (*obj_type) {
         case SPHERE:

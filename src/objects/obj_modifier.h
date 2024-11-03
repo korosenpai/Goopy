@@ -11,4 +11,4 @@ typedef enum {
 } ObjEditModes;
 #define OBJ_EDIT_MODE_STRING "Edit;Create"
 
-Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type);
+Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type, float* obj_placing_dist);

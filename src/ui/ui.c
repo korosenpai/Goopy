@@ -1,6 +1,4 @@
 #include "ui.h"
-#include "modify_parameters_panel/mpp.h"
-#include "top_bar/tb.h"
 
 
 static UiTopBar top_bar = {0};
@@ -11,14 +9,13 @@ void ui_init() {
     GuiLoadStyleAmber();
     GuiSetStyle(DEFAULT, TEXT_SIZE, DEFAULT_FONT_SIZE);
 
-    top_bar = ui_top_bar_init();
+    ui_top_bar_init(&top_bar);
 
     ui_modify_params_panel_init(&modify_parameters_panel);
 }
 
 
 
-// https://github.com/raysan5/raygui/issues/379
 void ui_render_and_update(ConfigurationState* state, Mouse* mouse) {
     mouse->ui_clicked = false;
 

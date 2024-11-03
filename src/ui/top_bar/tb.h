@@ -16,6 +16,6 @@ typedef struct {
 
 } UiTopBar;
 
-UiTopBar ui_top_bar_init();
+void ui_top_bar_init(UiTopBar* tp);
 void ui_top_bar_render_and_update(UiTopBar* tp, ConfigurationState* state, Mouse* mouse);
 void ui_top_bar_close(UiTopBar* tp);

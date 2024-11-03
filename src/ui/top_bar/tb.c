@@ -1,8 +1,8 @@
 #include "tb.h"
 
 
-UiTopBar ui_top_bar_init() {
-    return (UiTopBar){
+void ui_top_bar_init(UiTopBar* tp) {
+    *tp = (UiTopBar){
 
         .camera_mode = dropdown_menu_create(
             (Rectangle){TB_LEFT_OFFSET, TB_TOP_OFFSET, 150, 50}, CAMERA_MODE_STRING

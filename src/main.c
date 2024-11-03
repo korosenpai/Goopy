@@ -130,6 +130,19 @@ int main(void) {
 
                     manager_render_objects();
 
+                    // draw preview of where center of obj will be placed
+                    // TODO: add better
+                    if (config_state.edit_mode == CREATE) {
+                        DrawSphereWires(
+                            Vector3Add(
+                                mouse_ray.position, 
+                                Vector3Scale(mouse_ray.direction, config_state.obj_placing_distance)
+                            ),
+                            0.1f, 8, 8, GOLD 
+                        );
+
+                    }
+
                 EndMode3D();
             }
 
@@ -157,7 +170,10 @@ int main(void) {
                 manager_move_selected_obj(&mouse_ray);
             }
             else if (IS_LEFT_MOUSE_RELEASED(mouse) && config_state.edit_mode == CREATE) {
-                Object new_object = modifier_create_object(&mouse_ray, &config_state.selected_shape);
+                Object new_object = modifier_create_object(
+                    &mouse_ray, &config_state.selected_shape, &config_state.obj_placing_distance
+                );
+
                 if (new_object.type != OBJECT_NONE) {
                     manager_add_object(&shader, new_object);
                 }

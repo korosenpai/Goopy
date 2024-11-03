@@ -14,7 +14,7 @@
 
 typedef struct {
     char* title;
-    Rectangle bounds;
+    Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE
 
     bool collapsed;
 

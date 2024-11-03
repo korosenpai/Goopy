@@ -8,8 +8,9 @@
 #include "../config_state/config_state.h"
 #include "../mouse/mouse.h"
 
-#include "top_bar/tb.h"
 
+#include "modify_parameters_panel/mpp.h"
+#include "top_bar/tb.h"
 
 // #include "elements/toggle_group/tg.h"
 // #include "elements/dropdown_menu/dm.h"
