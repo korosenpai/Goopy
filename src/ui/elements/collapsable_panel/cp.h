@@ -9,12 +9,15 @@
 
 #include "../../../constants.h"
 
+#include "../../elements/draggable_rec/dr.h"
+
 // must be window like GuiWindowBox but when clicking on x collapse it and show only rectangle 
 // (set to invisible to not show after), must have array of pointers to bool visible param of ui elements inside
 
 typedef struct {
     char* title;
     Rectangle title_bounds;
+    DraggableRect title_rec;
 
     Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE
 

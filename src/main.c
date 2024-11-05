@@ -13,6 +13,7 @@
 #include "objects/objects_manager.h"
 #include "shader_manager/shader_manager.h"
 
+#include "ui/elements/draggable_rec/dr.h"
 #include "ui/ui.h"
 #include "utils/utils.h" // NOTE: bug in lsp, it is used
 #include "utils/vectors/vector_operations.h"
@@ -153,7 +154,6 @@ int main(void) {
             // FPS screen
             DrawRectangle(SCREEN_WIDTH - 120, 10, 110, 40, BLACK);
             DrawFPS(SCREEN_WIDTH - 100, 20);
-
 
 
         EndDrawing();

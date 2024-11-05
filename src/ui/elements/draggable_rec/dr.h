@@ -1,6 +1,10 @@
 #pragma once
 
 #include <raylib.h>
+#include <stdbool.h>
+
+#include "../../../mouse/mouse.h"
+#include "../../../constants.h"
 
 // inspo: https://www.raylib.com/examples/shapes/loader.html?name=shapes_lines_bezier
 
@@ -13,4 +17,4 @@ typedef struct {
 
 DraggableRect draggable_rect_create(int x, int y, int width, int height, Color color);
 
-void draggable_rect_render_and_update(DraggableRect* dr);
+void draggable_rect_render_and_update(DraggableRect* dr, Mouse* mouse);
