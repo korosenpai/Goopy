@@ -11,4 +11,6 @@ typedef enum {
 } ObjEditModes;
 #define OBJ_EDIT_MODE_STRING "Edit;Create"
 
+#define DEFAULT_OBJ_PLACING_DISTANCE 5.0
+
 Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type, float* obj_placing_dist);

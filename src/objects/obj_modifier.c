@@ -4,8 +4,6 @@
 #include <raymath.h>
 #include <stdio.h>
 
-// NOTE: implement in ui to change
-#define DEFAULT_OBJ_PLACING_DISTANCE 5.0
 
 Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type, float* obj_placing_dist) {
     // if it remains like this something has gone wong

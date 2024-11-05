@@ -138,7 +138,7 @@ int main(void) {
                                 mouse_ray.position, 
                                 Vector3Scale(mouse_ray.direction, config_state.obj_placing_distance)
                             ),
-                            0.1f, 8, 8, GOLD 
+                            SPHERE_DEFAULT_RADIUS, 8, 8, GOLD 
                         );
 
                     }

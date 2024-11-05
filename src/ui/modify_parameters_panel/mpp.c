@@ -2,11 +2,13 @@
 #include <stdio.h>
 
 void ui_modify_params_panel_init(UiModifyParametersPanel* mpp) {
+    float fontsize = (float)DEFAULT_FONT_SIZE * 0.85;
     *mpp = (UiModifyParametersPanel){
-        .fontsize = (float)DEFAULT_FONT_SIZE * 0.85,
+        .fontsize = fontsize,
         .panel = collapsable_panel_create(
             (Rectangle){DEFAULT_PANEL_X, DEFAULT_PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT},
-            "parameters"
+            "parameters",
+            fontsize
         ),
     };
 

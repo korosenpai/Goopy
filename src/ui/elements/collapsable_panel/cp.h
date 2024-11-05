@@ -14,6 +14,8 @@
 
 typedef struct {
     char* title;
+    Rectangle title_bounds;
+
     Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE
 
     bool collapsed;
@@ -23,7 +25,7 @@ typedef struct {
 
 } CollapsablePanel;
 
-CollapsablePanel collapsable_panel_create(Rectangle bounds, char* title);
+CollapsablePanel collapsable_panel_create(Rectangle bounds, char* title, int fontsize);
 
 // NOTE: update for ui_clicked and collapse in case
 void collapsable_panel_render_and_update(CollapsablePanel* cp, Mouse* mouse, ConfigurationState* state);
