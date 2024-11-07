@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../constants.h"
+#include "../../objects/objects.h"
 
 #include <raylib.h>
 
@@ -13,6 +14,9 @@ typedef struct {
     int arr_loc; // uniform loc
     int arr_size;
     float* arr;
+
+    // array of pointers to objs, to see which change and change them in shader
+    Object** objs;
 
 } ObjTypeShaderData;
 

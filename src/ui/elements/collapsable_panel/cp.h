@@ -16,10 +16,9 @@
 
 typedef struct {
     char* title;
-    Rectangle title_bounds;
     DraggableRect title_rec;
 
-    Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE
+    Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE (updated automatically)
 
     bool collapsed;
 

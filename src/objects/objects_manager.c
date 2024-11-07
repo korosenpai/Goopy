@@ -3,8 +3,6 @@
 #include <raylib.h>
 #include <stdio.h>
 
-#include "selected_obj_menu.h"
-
 // id of selected object, whom render axis and translation panels
 // id is calculated as position of obj in array
 static int _selected_obj = -1;
@@ -51,7 +49,7 @@ void manager_render_objects() {
 void manager_render_selected_obj_menu(Camera3D* camera) {
     if (_selected_obj < 0) return;
 
-    selected_obj_render_menu_sphere(camera, _objects + _selected_obj);
+    // TODO: in ui/
 }
 
 // determine what obj the mouse is hitting and if mouse is pressed select it

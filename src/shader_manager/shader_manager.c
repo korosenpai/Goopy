@@ -49,9 +49,7 @@ void shader_add_obj(Shader* shader, Object* obj) {
     data_arr->arr_size += 4;
 
 
-    // add data array
-    // assert(obj->data_arr_length == obj_element_count -3(pos) -4(colors))
-
+    // pass data array
     for (int i = 0; i < obj->data_arr_length; i++) {
         data_arr->arr[data_arr->arr_size + i] = obj->data[i];
     }

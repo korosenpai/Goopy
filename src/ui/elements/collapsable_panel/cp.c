@@ -11,13 +11,6 @@ CollapsablePanel collapsable_panel_create(Rectangle bounds, char* title, int fon
         .title_rec = draggable_rect_create(
             bounds.x, bounds.y - fontsize - 10, bounds.width, fontsize + 10, GRAY),
 
-        .title_bounds= (Rectangle) {
-            bounds.x,
-            bounds.y - fontsize - 10,
-            .width = bounds.width,
-            .height = fontsize + 10,
-
-        },
         .bounds = bounds,
         .collapsed = false,
 

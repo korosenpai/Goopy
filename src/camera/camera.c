@@ -1,7 +1,5 @@
 #include "camera.h"
 
-#include <raylib.h>
-#include <raymath.h>
 
 static int _camera_mode = STILL;
 
@@ -19,8 +17,9 @@ void camera_update(Camera3D* camera) {
     UpdateCamera(camera, _camera_mode);
 }
 
-void camera_toggle_mode() {
+void camera_toggle_mode(CameraModes* status) {
     _camera_mode = _camera_mode == STILL ? FREE : STILL;
+    *status = _camera_mode;
 
     if (_camera_mode == STILL) {
         EnableCursor();
