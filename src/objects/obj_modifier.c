@@ -16,7 +16,10 @@ Object modifier_create_object(Ray* mouse_ray, OBJ_TYPE* obj_type, float* obj_pla
 
     switch (*obj_type) {
         case SPHERE:
-            res = sphere_create(placing_pos, SPHERE_DEFAULT_RADIUS, OBJ_DEFAULT_COLOR);
+            // res = sphere_create(placing_pos, SPHERE_DEFAULT_RADIUS, OBJ_DEFAULT_COLOR);
+            res = obj_create(SPHERE, placing_pos, OBJ_DEFAULT_COLOR, 1, SPHERE_DEFAULT_RADIUS);
+            res.render = sphere_render;
+            res.select = sphere_select;
             break;
 
         case CUBE:

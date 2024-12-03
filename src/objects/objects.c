@@ -214,3 +214,33 @@ Object cube_create(Vector3 position, float width, float height, float length, Co
 }
 
 
+//////////////////// GENERAL ////////////////////
+
+Object obj_create(
+    OBJ_TYPE type, Vector3 position, Color color,
+    int data_arr_length, ... // data args
+) {
+    // create data array
+    float* data = malloc(sizeof(float) * data_arr_length);
+
+    va_list lst;
+    va_start(lst, data_arr_length);
+    for (int i = 0; i < data_arr_length; i++) {
+        data[i] = (float)va_arg(lst, double);
+    }
+    va_end(lst);
+
+    return (Object) {
+        .type = type,
+        .position = position,
+        .axes = {axis_new_x(), axis_new_y(), axis_new_z()},
+        .color = color,
+        .updated = true,
+
+        .data_arr_length = data_arr_length,
+        .data = data,
+
+        .select = NULL,
+        .render = NULL,
+    };
+}

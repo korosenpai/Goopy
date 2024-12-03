@@ -29,6 +29,10 @@ uniform int cubeCount;
 uniform int cubeElementsCount;  // pos (3) + color (4) + width + height + length
 uniform float cubeInfoArr[MAX_OBJ_COUNT * 8];
 
+uniform int octahedronCount;
+uniform int octahedronElementsCount;  // pos (3) + color (4) + radius
+uniform float octahedronInfoArr[MAX_OBJ_COUNT * 8];
+
 //////////////////////////// RAYMARCHING + SDFS ////////////////////////////
 // https://iquilezles.org/articles/distfunctions/
 float sdSphere(vec3 p, vec3 center, float radius) {
@@ -43,6 +47,11 @@ float sdTorus(vec3 p, float inner_radius, float large_radius) {
     // two circles, one bigger and one smaller that revolves around bigger
     float x = length(p.xz) - large_radius;
     return length(vec2(x, p.y)) - inner_radius;
+}
+
+float sdOctahedron( vec3 p, float s) {
+  p = abs(p);
+  return (p.x+p.y+p.z-s)*0.57735027;
 }
 
 float smin(float a, float b, float k) {
@@ -83,6 +92,17 @@ float sdf(vec3 pos) {
         // NOTE: cube size must be half
         float cube = sdBox(pos - vec3(x, y, z), vec3(width / 2, height / 2, length / 2));
         d = smin(d, cube, 1.0);
+    }
+
+    for (int i = 0; i < octahedronCount; i++) {
+        float x = octahedronInfoArr[i * octahedronElementsCount];
+        float y = octahedronInfoArr[i * octahedronElementsCount + 1];
+        float z = octahedronInfoArr[i * octahedronElementsCount + 2];
+
+        float radius = octahedronInfoArr[i * octahedronElementsCount + COLOR_SIZE + 3];
+
+        float octahedron = sdOctahedron(pos - vec3(x, y, z), radius);
+        d = smin(d, octahedron, 1.0);
     }
     return d; 
 }

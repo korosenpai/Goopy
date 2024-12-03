@@ -60,6 +60,10 @@ void axes_move(Ray* ray, Axis axes[3], Vector3* obj_pos); // detect if obj needs
 #define OBJ_PTR_RENDER(obj_ptr, is_selected) ((obj_ptr)->render(obj_ptr, is_selected))
 #define OBJ_RENDER(obj, is_selected) ((obj).render(&(obj), is_selected))
 #define OBJ_PTR_SELECT(obj, ray_ptr) ((obj)->select(obj, ray_ptr))
+
+#define OBJ_RENDER_FUNC_ARGS const struct Object* self, bool is_selected
+#define OBJ_SELECT_FUNC_ARGS const struct Object* self, const Ray* ray
+
 typedef struct Object {
     OBJ_TYPE type;
     Vector3 position;
@@ -70,8 +74,8 @@ typedef struct Object {
     int data_arr_length;
     float* data;
 
-    RayCollision (* select) (const struct Object* self, const Ray* ray); // collision is checked in manager
-    void (* render) (const struct Object* self, bool is_selected);
+    RayCollision (* select) (OBJ_SELECT_FUNC_ARGS); // collision is checked in manager
+    void (* render) (OBJ_RENDER_FUNC_ARGS);
 } Object;
 
 void object_destroy(Object* obj);
@@ -82,11 +86,18 @@ Object obj_none_create();
 
 // SPHERE data = { radius }
 #define SPHERE_DEFAULT_RADIUS 1.0f
-Object sphere_create(Vector3 position, float radius, Color color);
+Object sphere_create(Vector3 position, float radius, Color color); // TODO: remove after
+void sphere_render(OBJ_RENDER_FUNC_ARGS);
+RayCollision sphere_select(const Object* sphere, const Ray* ray);
 
 // CUBE data = { width, height, length }
 #define CUBE_DEFAULT_SIZE 1.0f
 Object cube_create(Vector3 position, float width, float height, float length, Color color);
 
 
-
+// TODO: maybe can use only one function to generate all these objects
+// and render and select functions are given after created
+Object obj_create(
+    OBJ_TYPE type, Vector3 position, Color color,
+    int data_arr_length, ... // data args
+);

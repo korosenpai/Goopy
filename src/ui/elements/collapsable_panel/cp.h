@@ -16,7 +16,7 @@
 
 typedef struct {
     char* title;
-    DraggableRect title_rec;
+    DraggableRect top_label;
 
     Rectangle bounds; // NOTE: RELATIVE TO RECTANGLE CREATED, NOT THE ONE WITH TITLE (updated automatically)
 

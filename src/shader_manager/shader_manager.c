@@ -27,6 +27,9 @@ void shader_setup(Shader* shader) {
     objDataArrays = malloc(sizeof(ObjTypeShaderData) * OBJ_DATA_ARRAY_COUNT);
     objDataArrays[0] = obj_shader_data_create(POSITION_SIZE + COLOR_SIZE + 1, shader, "spheresCount", "sphereElementsCount", "sphereInfoArr");
     objDataArrays[1] = obj_shader_data_create(POSITION_SIZE + COLOR_SIZE + 3, shader, "cubeCount", "cubeElementsCount","cubeInfoArr"); 
+    
+    // TODO: implement
+    // objDataArrays[1] = obj_shader_data_create(POSITION_SIZE + COLOR_SIZE + 1, shader, "octahedronCount", "octahedronElementsCount","octahedronInfoArr"); 
 }
 
 void shader_add_obj(Shader* shader, Object* obj) {
