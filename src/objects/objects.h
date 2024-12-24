@@ -69,6 +69,7 @@ typedef struct Object {
     Vector3 position;
     Axis axes[3];
     Color color;
+    bool visible;
     bool updated; // if some state changed since last frame, (if not skip updating in shader) // TODO: at end to optimize
 
     int data_arr_length;
